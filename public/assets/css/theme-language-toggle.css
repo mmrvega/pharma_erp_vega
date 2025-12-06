@@ -1,0 +1,209 @@
+/* ========================================
+   THEME & LANGUAGE TOGGLE BUTTONS
+   ======================================== */
+
+/* ========================================
+   1. LANGUAGE TOGGLE BUTTON
+   ======================================== */
+
+.language-toggle-btn {
+    position: fixed;
+    bottom: 85px;
+    right: 20px;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    border: none;
+    color: #1a1a1a;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: all 0.3s ease;
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    height: 50px;
+}
+
+.language-toggle-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.language-toggle-btn span {
+    letter-spacing: 0.5px;
+}
+
+body.dark-mode .language-toggle-btn {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+    color: #0f0f0f;
+}
+
+body.dark-mode .language-toggle-btn:hover {
+    box-shadow: 0 6px 20px rgba(244, 208, 63, 0.4);
+}
+
+/* ========================================
+   2. THEME TOGGLE BUTTON
+   ======================================== */
+
+.theme-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    border: none;
+    color: #1a1a1a;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+body.dark-mode .theme-toggle-btn {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+    color: #0f0f0f;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+    box-shadow: 0 6px 20px rgba(244, 208, 63, 0.4);
+}
+
+/* ========================================
+   3. RTL SUPPORT
+   ======================================== */
+
+body.rtl {
+    direction: rtl;
+}
+
+body.rtl .language-toggle-btn,
+body.rtl .theme-toggle-btn {
+    left: 20px;
+    right: auto;
+}
+
+body.rtl .language-toggle-btn {
+    bottom: 85px;
+}
+
+body.rtl .sidebar {
+    border-right: none;
+    border-left: 2px solid var(--primary-gold);
+}
+
+body.rtl .navbar {
+    direction: rtl;
+}
+
+body.rtl .sidebar-menu > ul > li > a {
+    border-left: none;
+    border-right: 3px solid transparent;
+}
+
+body.rtl .sidebar-menu > ul > li > a:hover,
+body.rtl .sidebar-menu > ul > li.active > a {
+    border-right-color: var(--primary-gold);
+    border-left: none;
+}
+
+body.rtl .page-wrapper {
+    margin-left: 0;
+}
+
+/* ========================================
+   4. ANIMATION TRANSITIONS
+   ======================================== */
+
+body,
+body * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ========================================
+   5. MOBILE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .theme-toggle-btn,
+    .language-toggle-btn {
+        width: 45px;
+        height: 45px;
+        bottom: 15px;
+        right: 15px;
+        font-size: 1.1rem;
+    }
+
+    body.rtl .theme-toggle-btn,
+    body.rtl .language-toggle-btn {
+        left: 15px;
+        right: auto;
+    }
+
+    .language-toggle-btn {
+        bottom: 70px;
+    }
+
+    .language-toggle-btn span {
+        display: none;
+    }
+
+    .language-toggle-btn::before {
+        content: 'EN';
+        font-size: 0.7rem;
+    }
+}
+
+/* ========================================
+   6. ACCESSIBILITY
+   ======================================== */
+
+.theme-toggle-btn:focus,
+.language-toggle-btn:focus {
+    outline: 2px solid var(--primary-gold);
+    outline-offset: 2px;
+}
+
+.theme-toggle-btn:active,
+.language-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========================================
+   7. SHADOW IMPROVEMENTS
+   ======================================== */
+
+.theme-toggle-btn,
+.language-toggle-btn {
+    box-shadow: 
+        0 4px 15px rgba(212, 175, 55, 0.2),
+        0 0 0 0 rgba(212, 175, 55, 0.1);
+}
+
+/* ========================================
+   8. PRINT STYLES
+   ======================================== */
+
+@media print {
+    .theme-toggle-btn,
+    .language-toggle-btn {
+        display: none !important;
+    }
+}

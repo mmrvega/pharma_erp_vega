@@ -1,0 +1,541 @@
+/* ========================================
+   LUXURY POS CART & DASHBOARD
+   ======================================== */
+
+/* ========================================
+   1. POS CART SECTION
+   ======================================== */
+
+.pos-cart-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    margin-bottom: 2rem;
+}
+
+.pos-cart-header {
+    background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%);
+    color: #D4AF37;
+    padding: 1.5rem;
+    border-radius: 12px 12px 0 0;
+    margin: -2rem -2rem 1.5rem -2rem;
+    border-bottom: 3px solid #D4AF37;
+}
+
+.pos-cart-header h4 {
+    color: #D4AF37;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+/* Barcode Input */
+.barcode-input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.barcode-input-group .form-control {
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: white;
+    border: 2px solid #D4AF37;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+}
+
+.barcode-input-group .form-control:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), 0 4px 15px rgba(212, 175, 55, 0.15);
+}
+
+.barcode-input-group label {
+    color: #1a1a1a;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Search Results */
+.search-results {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.search-results-item {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.search-results-item:hover {
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+    border-left: 3px solid #D4AF37;
+    padding-left: 0.7rem;
+}
+
+.search-results-item .product-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.25rem;
+}
+
+.search-results-item .product-code {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+/* ========================================
+   2. POS CART TABLE
+   ======================================== */
+
+.pos-cart-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.pos-cart-table table {
+    margin-bottom: 0;
+}
+
+.pos-cart-table thead {
+    background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.pos-cart-table thead th {
+    color: #D4AF37;
+    font-weight: 700;
+    padding: 1.25rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+.pos-cart-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.pos-cart-table tbody tr:hover {
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.pos-cart-table tbody td {
+    padding: 1rem 1.25rem;
+    color: #333;
+    vertical-align: middle;
+}
+
+.pos-cart-table .qty-input {
+    width: 80px;
+    padding: 0.5rem;
+    border: 2px solid #D4AF37;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.pos-cart-table .qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pos-cart-table .qty-btn {
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    color: #1a1a1a;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pos-cart-table .qty-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.pos-cart-table .remove-btn {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.pos-cart-table .remove-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* ========================================
+   3. POS SUMMARY SECTION
+   ======================================== */
+
+.pos-summary {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+    border-top: 3px solid #D4AF37;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1rem;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.summary-value {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+.summary-row.total {
+    padding: 1rem 0;
+    border-top: 2px solid #D4AF37;
+    border-bottom: 2px solid #D4AF37;
+    margin: 1rem 0;
+}
+
+.summary-row.total .summary-label {
+    color: #D4AF37;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.summary-row.total .summary-value {
+    color: #D4AF37;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ========================================
+   4. UNIT TOGGLE BUTTONS
+   ======================================== */
+
+.unit-toggle {
+    display: inline-flex;
+    background: white;
+    border: 2px solid #D4AF37;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.unit-toggle button {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: white;
+    color: #1a1a1a;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.unit-toggle button.active {
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    color: #1a1a1a;
+}
+
+.unit-toggle button:not(.active):hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+/* ========================================
+   5. ACTION BUTTONS
+   ======================================== */
+
+.pos-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pos-actions button {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-finalize {
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    color: #1a1a1a;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-finalize:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+}
+
+.btn-clear {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    color: white;
+}
+
+.btn-clear:hover {
+    background: linear-gradient(135deg, #7f8c8d 0%, #34495e 100%);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   6. TODAY'S SALES CARD
+   ======================================== */
+
+.sales-card {
+    background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
+    border: 2px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.sales-card:hover {
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.25);
+    transform: translateY(-2px);
+}
+
+.sales-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #D4AF37;
+}
+
+.sales-card-title {
+    color: #1a1a1a;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.sales-card-actions button {
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    color: #1a1a1a;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sales-card-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* ========================================
+   7. EXPIRATION ALERTS CARD
+   ======================================== */
+
+.expiration-alerts-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
+    border-top: 3px solid #D4AF37;
+}
+
+.alerts-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.alert-section h5 {
+    color: #1a1a1a;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #D4AF37;
+}
+
+.alert-item {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid #D4AF37;
+    transition: all 0.3s ease;
+}
+
+.alert-item:hover {
+    background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
+    transform: translateX(4px);
+}
+
+.alert-item.expired {
+    border-left-color: #e74c3c;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.05) 0%, rgba(231, 76, 60, 0.02) 100%);
+}
+
+.alert-item.near-expiry {
+    border-left-color: #f39c12;
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.05) 0%, rgba(243, 156, 18, 0.02) 100%);
+}
+
+.alert-product-name {
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.alert-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* ========================================
+   8. EMPTY STATE
+   ======================================== */
+
+.empty-cart {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
+    border-radius: 12px;
+    border: 2px dashed #D4AF37;
+}
+
+.empty-cart i {
+    font-size: 3rem;
+    color: #D4AF37;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-cart p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* ========================================
+   9. PRINT MODAL
+   ======================================== */
+
+#printer-select-modal .modal-content {
+    border: 2px solid #D4AF37;
+}
+
+#printer-select-modal .modal-header {
+    border-bottom: 3px solid #D4AF37;
+}
+
+#printer-select-modal .form-control {
+    border: 2px solid #D4AF37;
+}
+
+#printer-select-modal .btn-primary {
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    width: 100%;
+    font-weight: 700;
+}
+
+/* ========================================
+   10. RESPONSIVE POS
+   ======================================== */
+
+@media (max-width: 1200px) {
+    .pos-cart-container {
+        padding: 1.5rem;
+    }
+    
+    .alerts-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .pos-cart-container {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .pos-cart-header {
+        padding: 1rem;
+        margin: -1rem -1rem 1rem -1rem;
+    }
+    
+    .pos-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .pos-actions button {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+    
+    .pos-cart-table tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .qty-input {
+        width: 60px !important;
+    }
+    
+    .alerts-container {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,541 @@
+/* ========================================
+   DARK MODE / NIGHT MODE STYLING
+   ======================================== */
+
+/* ========================================
+   DARK MODE COLOR VARIABLES
+   ======================================== */
+
+body.dark-mode {
+    --primary-gold: #F4D03F;
+    --primary-dark: #0f0f0f;
+    --primary-darker: #050505;
+    --accent-light: #1a1a1a;
+    --gray-100: #1a1a1a;
+    --gray-200: #2d2d2d;
+    --gray-300: #3a3a3a;
+    --gray-400: #4a4a4a;
+    --gray-500: #666;
+    --gray-600: #888;
+    --gray-700: #aaa;
+    --gray-800: #ccc;
+    --gray-900: #e0e0e0;
+    
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    color: #e0e0e0;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #f0f0f0;
+}
+
+/* ========================================
+   DARK MODE - HEADER
+   ======================================== */
+
+body.dark-mode .navbar {
+    background: linear-gradient(90deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .navbar .navbar-brand {
+    color: #F4D03F;
+}
+
+body.dark-mode .navbar-nav .nav-link {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .navbar-nav .nav-link:hover {
+    color: #F4D03F !important;
+}
+
+/* ========================================
+   DARK MODE - SIDEBAR
+   ======================================== */
+
+body.dark-mode .sidebar {
+    background: linear-gradient(180deg, #0f0f0f 0%, #050505 100%);
+    border-right-color: #F4D03F;
+}
+
+body.dark-mode .sidebar-menu > ul > li > a {
+    color: #e0e0e0;
+}
+
+body.dark-mode .sidebar-menu > ul > li > a:hover {
+    background: rgba(244, 208, 63, 0.15);
+    border-left-color: #F4D03F;
+    color: #F4D03F;
+}
+
+body.dark-mode .sidebar-menu > ul > li.active > a {
+    background: linear-gradient(90deg, rgba(244, 208, 63, 0.25) 0%, transparent 100%);
+    border-left-color: #F4D03F;
+    color: #F4D03F;
+}
+
+body.dark-mode .sidebar-menu .menu-title {
+    color: #F4D03F;
+}
+
+body.dark-mode .sidebar-menu ul ul {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .sidebar-menu ul ul li a {
+    color: #aaa;
+}
+
+body.dark-mode .sidebar-menu ul ul li a:hover,
+body.dark-mode .sidebar-menu ul ul li a.active {
+    color: #F4D03F;
+    background: rgba(244, 208, 63, 0.15);
+}
+
+/* ========================================
+   DARK MODE - CARDS & CONTENT
+   ======================================== */
+
+body.dark-mode .card {
+    background: #1a1a1a;
+    border-color: #2d2d2d;
+}
+
+body.dark-mode .card-header {
+    background: linear-gradient(90deg, #0f0f0f 0%, #1a1a1a 100%);
+    color: #F4D03F;
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .card-body {
+    background: #1a1a1a;
+}
+
+body.dark-mode .card-title {
+    color: #f0f0f0;
+}
+
+/* ========================================
+   DARK MODE - BUTTONS
+   ======================================== */
+
+body.dark-mode .btn-primary {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    color: #0f0f0f;
+}
+
+body.dark-mode .btn-primary:hover {
+    background: linear-gradient(135deg, #ffd966 0%, #F4D03F 100%);
+}
+
+body.dark-mode .btn-secondary {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    color: #f0f0f0;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    color: #F4D03F;
+}
+
+/* ========================================
+   DARK MODE - FORMS
+   ======================================== */
+
+body.dark-mode .form-control {
+    background: #2d2d2d;
+    border-color: #3a3a3a;
+    color: #e0e0e0;
+}
+
+body.dark-mode .form-control:focus {
+    background: #2d2d2d;
+    border-color: #F4D03F;
+    color: #e0e0e0;
+    box-shadow: 0 0 0 3px rgba(244, 208, 63, 0.15);
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #666;
+}
+
+body.dark-mode .form-label {
+    color: #f0f0f0;
+}
+
+body.dark-mode .input-group-text {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    border-color: #F4D03F;
+    color: #0f0f0f;
+}
+
+/* ========================================
+   DARK MODE - TABLES
+   ======================================== */
+
+body.dark-mode .table {
+    background: #1a1a1a;
+    color: #e0e0e0;
+}
+
+body.dark-mode .table thead {
+    background: linear-gradient(90deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+body.dark-mode .table thead th {
+    color: #F4D03F;
+    border-color: #2d2d2d;
+}
+
+body.dark-mode .table tbody tr {
+    border-bottom-color: #2d2d2d;
+}
+
+body.dark-mode .table tbody tr:hover {
+    background: rgba(244, 208, 63, 0.1);
+}
+
+body.dark-mode .table tbody td {
+    color: #e0e0e0;
+    border-color: #2d2d2d;
+}
+
+/* ========================================
+   DARK MODE - ALERTS & BADGES
+   ======================================== */
+
+body.dark-mode .alert {
+    background: linear-gradient(90deg, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0.8) 100%);
+    border-color: rgba(244, 208, 63, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark-mode .alert-success {
+    background: linear-gradient(90deg, rgba(46, 204, 113, 0.15) 0%, rgba(46, 204, 113, 0.08) 100%);
+    border-left-color: #2ecc71;
+    color: #5ddb91;
+}
+
+body.dark-mode .alert-danger {
+    background: linear-gradient(90deg, rgba(231, 76, 60, 0.15) 0%, rgba(231, 76, 60, 0.08) 100%);
+    border-left-color: #e74c3c;
+    color: #f17d6d;
+}
+
+body.dark-mode .alert-warning {
+    background: linear-gradient(90deg, rgba(243, 156, 18, 0.15) 0%, rgba(243, 156, 18, 0.08) 100%);
+    border-left-color: #f39c12;
+    color: #f5b041;
+}
+
+body.dark-mode .alert-info {
+    background: linear-gradient(90deg, rgba(52, 152, 219, 0.15) 0%, rgba(52, 152, 219, 0.08) 100%);
+    border-left-color: #3498db;
+    color: #5dade2;
+}
+
+body.dark-mode .badge {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    color: #0f0f0f;
+}
+
+/* ========================================
+   DARK MODE - MODALS
+   ======================================== */
+
+body.dark-mode .modal-content {
+    background: #1a1a1a;
+    color: #e0e0e0;
+}
+
+body.dark-mode .modal-header {
+    background: linear-gradient(90deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .modal-title {
+    color: #F4D03F;
+}
+
+body.dark-mode .modal-body {
+    color: #e0e0e0;
+}
+
+body.dark-mode .modal-footer {
+    background: #2d2d2d;
+    border-top-color: #3a3a3a;
+}
+
+/* ========================================
+   DARK MODE - DROPDOWNS
+   ======================================== */
+
+body.dark-mode .dropdown-menu {
+    background: #1a1a1a;
+    border-color: #F4D03F;
+    border-top-color: #F4D03F;
+}
+
+body.dark-mode .dropdown-item {
+    color: #e0e0e0;
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item.active {
+    background: rgba(244, 208, 63, 0.15);
+    color: #F4D03F;
+}
+
+/* ========================================
+   DARK MODE - POS COMPONENTS
+   ======================================== */
+
+body.dark-mode .pos-cart-container {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+body.dark-mode .pos-cart-header {
+    background: linear-gradient(90deg, #0f0f0f 0%, #1a1a1a 100%);
+    color: #F4D03F;
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .pos-cart-table {
+    background: #1a1a1a;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .barcode-input-group .form-control {
+    background: #2d2d2d;
+    border-color: #F4D03F;
+    color: #e0e0e0;
+}
+
+body.dark-mode .search-results {
+    background: #1a1a1a;
+    border-color: #3a3a3a;
+}
+
+body.dark-mode .search-results-item {
+    background: #1a1a1a;
+    border-bottom-color: #2d2d2d;
+}
+
+body.dark-mode .search-results-item:hover {
+    background: rgba(244, 208, 63, 0.1);
+}
+
+body.dark-mode .search-results-item .product-name {
+    color: #f0f0f0;
+}
+
+body.dark-mode .search-results-item .product-code {
+    color: #666;
+}
+
+body.dark-mode .pos-summary {
+    background: #1a1a1a;
+    border-top-color: #F4D03F;
+}
+
+body.dark-mode .summary-label {
+    color: #aaa;
+}
+
+body.dark-mode .summary-value {
+    color: #f0f0f0;
+}
+
+body.dark-mode .summary-row.total {
+    border-top-color: #F4D03F;
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .summary-row.total .summary-label,
+body.dark-mode .summary-row.total .summary-value {
+    color: #F4D03F;
+}
+
+body.dark-mode .unit-toggle {
+    background: #2d2d2d;
+    border-color: #F4D03F;
+}
+
+body.dark-mode .unit-toggle button {
+    background: #2d2d2d;
+    color: #e0e0e0;
+}
+
+body.dark-mode .unit-toggle button.active {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    color: #0f0f0f;
+}
+
+/* ========================================
+   DARK MODE - CARDS
+   ======================================== */
+
+body.dark-mode .sales-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-color: #2d2d2d;
+}
+
+body.dark-mode .sales-card-header {
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .sales-card-title {
+    color: #f0f0f0;
+}
+
+body.dark-mode .expiration-alerts-card {
+    background: #1a1a1a;
+    border-top-color: #F4D03F;
+}
+
+body.dark-mode .alert-section h5 {
+    color: #f0f0f0;
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .alert-item {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+body.dark-mode .alert-item:hover {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+}
+
+body.dark-mode .alert-product-name {
+    color: #f0f0f0;
+}
+
+body.dark-mode .alert-meta {
+    color: #aaa;
+}
+
+/* ========================================
+   DARK MODE - PAGE HEADER
+   ======================================== */
+
+body.dark-mode .page-header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-bottom-color: #F4D03F;
+}
+
+body.dark-mode .page-title {
+    color: #f0f0f0;
+}
+
+body.dark-mode .page-subtitle {
+    color: #aaa;
+}
+
+/* ========================================
+   DARK MODE - THEME TOGGLE BUTTON
+   ======================================== */
+
+.theme-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4AF37 0%, #c49e2e 100%);
+    border: none;
+    color: #1a1a1a;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+body.dark-mode .theme-toggle-btn {
+    background: linear-gradient(135deg, #F4D03F 0%, #d4b72e 100%);
+    box-shadow: 0 4px 15px rgba(244, 208, 63, 0.3);
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+    box-shadow: 0 6px 20px rgba(244, 208, 63, 0.4);
+}
+
+/* ========================================
+   DARK MODE - SCROLLBAR
+   ======================================== */
+
+body.dark-mode::-webkit-scrollbar {
+    width: 10px;
+}
+
+body.dark-mode::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb {
+    background: #F4D03F;
+    border-radius: 5px;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: #d4b72e;
+}
+
+/* ========================================
+   DARK MODE - NOTIFICATION
+   ======================================== */
+
+body.dark-mode .notification-item {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-bottom-color: #1a1a1a;
+}
+
+body.dark-mode .notification-item:hover {
+    background: #3a3a3a;
+}
+
+body.dark-mode .notification-item.read {
+    opacity: 0.6;
+}
+
+/* ========================================
+   DARK MODE - EMPTY STATE
+   ======================================== */
+
+body.dark-mode .empty-cart {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-color: #F4D03F;
+}
+
+body.dark-mode .empty-cart i {
+    color: #F4D03F;
+}
+
+body.dark-mode .empty-cart p {
+    color: #aaa;
+}
+
+/* ========================================
+   SMOOTH TRANSITION
+   ======================================== */
+
+body,
+body * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
