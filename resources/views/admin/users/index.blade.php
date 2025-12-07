@@ -14,10 +14,6 @@
 		<li class="breadcrumb-item active">Users</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-	<a href="{{route('users.create')}}" class="btn btn-primary float-right mt-2">Add User</a>
-</div>
-
 @endpush
 
 @section('content')
@@ -25,6 +21,9 @@
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
+				<div class="d-flex justify-content-end mb-3">
+					<a href="{{route('users.create')}}" class="btn btn-primary">Add User</a>
+				</div>
 				<div class="table-responsive">
 					<table id="user-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>

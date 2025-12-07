@@ -10,10 +10,6 @@
 		<li class="breadcrumb-item active">Permissions</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-	<a href="#add_permission" data-toggle="modal" class="btn btn-primary float-right mt-2">Add Permission</a>
-</div>
-
 @endpush
 
 @section('content')
@@ -22,6 +18,9 @@
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
+				<div class="d-flex justify-content-end mb-3">
+					<a href="#add_permission" data-toggle="modal" class="btn btn-primary">Add Permission</a>
+				</div>
 				<div class="table-responsive">
 					<table id="perm-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>

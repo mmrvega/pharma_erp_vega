@@ -14,9 +14,6 @@
 		<li class="breadcrumb-item active">Categories</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-	<a href="#add_categories" data-toggle="modal" class="btn btn-primary float-right mt-2">Add Category</a>
-</div>
 @endpush
 
 @section('content')
@@ -24,6 +21,9 @@
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
+				<div class="d-flex justify-content-end mb-3">
+					<a href="#add_categories" data-toggle="modal" data-target="#add_categories" class="btn btn-primary">Add Category</a>
+				</div>
 				<div class="table-responsive">
 					<table id="category-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>

@@ -14,11 +14,6 @@
 		<li class="breadcrumb-item active">Sales</li>
 	</ul>
 </div>
-@can('create-sale')
-<div class="col-sm-5 col">
-	<a href="{{route('sales.create')}}" class="btn btn-primary float-right mt-2">Add Sale</a>
-</div>
-@endcan
 @endpush
 
 @section('content')
@@ -28,6 +23,11 @@
 		<!--  Sales -->
 		<div class="card">
 			<div class="card-body">
+				@can('create-sale')
+				<div class="d-flex justify-content-end mb-3">
+					<a href="{{route('sales.create')}}" class="btn btn-primary">Add Sale</a>
+				</div>
+				@endcan
 				<div class="table-responsive">
 					<table id="sales-table" class="datatable table table-hover table-center mb-0">
 						<thead>

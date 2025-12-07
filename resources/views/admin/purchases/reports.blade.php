@@ -15,9 +15,6 @@
 		<li class="breadcrumb-item active">Generate Purchase Reports</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-	<a href="#generate_report" data-toggle="modal" class="btn btn-primary float-right mt-2">Generate Report</a>
-</div>
 @endpush
 
 @section('content')
@@ -26,8 +23,11 @@
         <div class="col-md-12">
             <!-- Purchases reports-->
             <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
+            <div class="card-body">
+                <div class="d-flex justify-content-end mb-3">
+                <a href="#generate_report" data-toggle="modal" class="btn btn-primary">Generate Report</a>
+                </div>
+                <div class="table-responsive">
                         <table id="purchase-table" class="datatable table table-hover table-center mb-0">
                             <thead>
                                 <tr>

@@ -14,9 +14,6 @@
 		<li class="breadcrumb-item active" data-i18n="supplier">{{ trans_key('supplier') }}</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-	<a href="{{route('suppliers.create')}}" class="btn btn-primary float-right mt-2" data-i18n="add_supplier">{{ trans_key('add_supplier') }}</a>
-</div>
 @endpush
 
 @section('content')
@@ -26,6 +23,9 @@
 		<!-- Suppliers -->
 		<div class="card">
 			<div class="card-body">
+				<div class="d-flex justify-content-end mb-3">
+					<a href="{{route('suppliers.create')}}" class="btn btn-primary">{{ trans_key('add_supplier') }}</a>
+				</div>
 				<div class="table-responsive">
 					<table id="supplier-table" class="datatable table table-hover table-center mb-0">
 						<thead>

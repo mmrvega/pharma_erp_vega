@@ -8,15 +8,6 @@
 		<li class="breadcrumb-item active">App Backups</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-    <form action="{{route('backup.store')}}" method="post">
-        @csrf
-        @method("PUT")
-        <button class="btn btn-primary float-right mt-2" type="submit">Create Backup</button>
-    </form>
-	{{-- <a href="#add_categories" data-toggle="modal" class="btn btn-primary float-right mt-2">Add Category</a> --}}
-</div>
-
 @endpush
 
 @section('content')
@@ -24,8 +15,15 @@
 <div class="row">
 	<div class="col-sm-12">
 		<div class="card">
-			<div class="card-body">
-				<div class="table-responsive">
+            <div class="card-body">
+                <div class="d-flex justify-content-end mb-3">
+                    <form action="{{route('backup.store')}}" method="post" class="mb-0">
+                        @csrf
+                        @method("PUT")
+                        <button class="btn btn-primary" type="submit">Create Backup</button>
+                    </form>
+                </div>
+                <div class="table-responsive">
 					<table id="category-table" class="datatable table table-striped table-bordered table-hover table-center mb-0">
 						<thead>
 							<tr style="boder:1px solid black;">

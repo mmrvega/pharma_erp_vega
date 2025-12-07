@@ -14,9 +14,6 @@
 		<li class="breadcrumb-item active">Products</li>
 	</ul>
 </div>
-<div class="col-sm-5 col">
-	<a href="{{route('products.create')}}" class="btn btn-primary float-right mt-2">Add Product</a>
-</div>
 @endpush
 
 @section('content')
@@ -26,6 +23,9 @@
 		<!-- Products -->
 		<div class="card">
 			<div class="card-body">
+				<div class="d-flex justify-content-end mb-3">
+					<a href="{{route('products.create')}}" class="btn btn-primary">Add Product</a>
+				</div>
 				<div class="table-responsive">
 					<table id="product-table" class="datatable table table-hover table-center mb-0">
 						<thead>
