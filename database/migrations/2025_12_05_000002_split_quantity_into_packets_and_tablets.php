@@ -14,9 +14,9 @@ class SplitQuantityIntoPacketsAndTablets extends Migration
     public function up()
     {
         Schema::table('purchases', function (Blueprint $table) {
-            // Add new columns for packet and tablet tracking
+            // Add new columns for packet and sheet tracking
             $table->integer('packet_quantity')->default(0)->comment('Number of full packets');
-            $table->integer('loose_tablets')->default(0)->comment('Number of loose tablets (0-packet_size)');
+            $table->integer('loose_sheets')->default(0)->comment('Number of loose sheets (0-packet_size)');
             
             // Keep the old 'quantity' column for now (can be dropped in future migration)
         });
@@ -31,7 +31,7 @@ class SplitQuantityIntoPacketsAndTablets extends Migration
     {
         Schema::table('purchases', function (Blueprint $table) {
             $table->dropColumn('packet_quantity');
-            $table->dropColumn('loose_tablets');
+            $table->dropColumn('loose_sheets');
         });
     }
 }

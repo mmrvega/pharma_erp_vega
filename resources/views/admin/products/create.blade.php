@@ -33,7 +33,7 @@
                                         <option value="">-- Select a product --</option>
                                         @foreach ($purchases as $purchase)
                                             <option value="{{$purchase->id}}" data-packet-size="{{$purchase->packet_size}}">
-                                                {{$purchase->product}} ({{$purchase->packet_size}} tablets/packet)
+                                                {{$purchase->product}} ({{$purchase->packet_size}} sheets/packet)
                                             </option>
                                         @endforeach
                                     </select>
@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label>Tablets per Packet</label>
+                                    <label>Sheets per Packet</label>
                                     <input class="form-control" type="number" id="packet-size-display" disabled>
                                     <small class="text-muted">Auto-filled from the purchase</small>
                                 </div>
@@ -56,7 +56,7 @@
                                     <label>Sell By Unit <span class="text-danger">*</span></label>
                                     <select class="form-select form-control" name="unit_type">
                                         <option value="packet">Packet (by package)</option>
-                                        <option value="tablet">Tablet (individual tablets)</option>
+                                        <option value="sheet">Sheet (individual sheets)</option>
                                     </select>
                                 </div>
                             </div>

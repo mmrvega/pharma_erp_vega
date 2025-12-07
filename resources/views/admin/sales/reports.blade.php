@@ -71,10 +71,10 @@
 														@endif
 													</td>
 													<td>{{ $qty }}</td>
-													<td>{{ AppSettings::get('app_currency', '$') }}{{ number_format($totalPrice, 2) }}</td>
-													<td>{{ AppSettings::get('app_currency', '$') }}{{ number_format($totalCost, 2) }}</td>
+													<td>{{ number_format($totalPrice, 2) }}{{ AppSettings::get('app_currency', '$') }}</td>
+													<td>{{ number_format($totalCost, 2) }}{{ AppSettings::get('app_currency', '$') }}</td>
 													<td>{{ $profitPercent }}%</td>
-													<td>{{ optional($sale->created_at)->format('d M, Y') }}</td>
+													<td>{{ optional($sale->created_at)->format('d M, Y H:i') }}</td>
 												</tr>
 											@endif
 										@endforeach
@@ -83,8 +83,8 @@
 										<tr>
 											<th>Total</th>
 											<th>{{ $sumQty }}</th>
-											<th>{{ AppSettings::get('app_currency', '$') }}{{ number_format($sumTotalPrice, 2) }}</th>
-											<th>{{ AppSettings::get('app_currency', '$') }}{{ number_format($sumTotalCost, 2) }}</th>
+											<th>{{ number_format($sumTotalPrice, 2) }}{{ AppSettings::get('app_currency', '$') }}</th>
+											<th>{{ number_format($sumTotalCost, 2) }}{{ AppSettings::get('app_currency', '$') }}</th>
 											<th>
 												@php
 													$overallPercent = $sumTotalCost > 0 ? round((($sumTotalPrice - $sumTotalCost) / $sumTotalCost) * 100, 2) : 0;
@@ -148,42 +148,34 @@
 @push('page-js')
 <script>
     $(document).ready(function(){
-        $('#sales-table').DataTable({
-			dom: 'Bfrtip',		
+		$('#sales-table').DataTable({
+			dom: 'Bfrtip',
 			buttons: [
 				{
-				extend: 'collection',
-				text: 'Export Data',
-				buttons: [
-					{
-								extend: 'pdf',
-								footer: true,
-								exportOptions: {
-									columns: "thead th:not(.action-btn)"
-								}
-					},
-					{
-								extend: 'excel',
-								footer: true,
-								exportOptions: {
-									columns: "thead th:not(.action-btn)"
-								}
-					},
-					{
-								extend: 'csv',
-								footer: true,
-								exportOptions: {
-									columns: "thead th:not(.action-btn)"
-								}
-					},
-					{
-								extend: 'print',
-								footer: true,
-								exportOptions: {
-									columns: "thead th:not(.action-btn)"
-								}
-					}
-				]
+					extend: 'collection',
+					text: 'Export Data',
+					buttons: [
+						{
+							extend: 'pdf',
+							footer: true,
+							exportOptions: { columns: [0,1,2,3,4,5] }
+						},
+						{
+							extend: 'excel',
+							footer: true,
+							exportOptions: { columns: [0,1,2,3,4,5] }
+						},
+						{
+							extend: 'csv',
+							footer: true,
+							exportOptions: { columns: [0,1,2,3,4,5] }
+						},
+						{
+							extend: 'print',
+							footer: true,
+							exportOptions: { columns: [0,1,2,3,4,5] }
+						}
+					]
 				}
 			]
 		});

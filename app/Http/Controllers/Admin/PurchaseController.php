@@ -49,7 +49,7 @@ class PurchaseController extends Controller
                     return date_format(date_create($purchase->expiry_date),'d M, Y');
                 })
                 ->addColumn('quantity',function($purchase){
-                    // Display inventory as "X packets + Y tablets"
+                    // Display inventory as "X packets + Y sheets"
                     return $purchase->formatted_inventory;
                 })
                 ->addColumn('action', function ($row) {
@@ -101,7 +101,7 @@ class PurchaseController extends Controller
             'category'=>'required',
             'cost_price'=>'required|min:1',
             'packet_quantity'=>'required|integer|min:0',
-            'loose_tablets'=>'required|integer|min:0',
+            'loose_sheets'=>'required|integer|min:0',
             'packet_size'=>'required|integer|min:1',
             'expiry_date'=>'required',
             'expiry_alert_days'=>'nullable|integer|min:0',
@@ -110,7 +110,7 @@ class PurchaseController extends Controller
             'image'=>'file|image|mimes:jpg,jpeg,png,gif',
             // optional product fields
             'product_price'=>'nullable|numeric|min:0',
-            'product_unit_type'=>'nullable|in:packet,tablet',
+            'product_unit_type'=>'nullable|in:packet,sheet',
             'product_barcode'=>'nullable|max:255',
         ]);
         $imageName = null;
@@ -129,7 +129,7 @@ class PurchaseController extends Controller
             'cost_price'=>$request->cost_price,
             'quantity'=>$request->packet_quantity,  // keep for backward compatibility
             'packet_quantity'=>$request->packet_quantity,
-            'loose_tablets'=>$request->loose_tablets,
+            'loose_sheets'=>$request->loose_sheets,
             'packet_size'=>$request->packet_size,
             'expiry_alert_days'=>$request->expiry_alert_days ?? null,
             'low_stock_alert_threshold'=>$request->low_stock_alert_threshold ?? null,
@@ -187,7 +187,7 @@ class PurchaseController extends Controller
             'category'=>'required',
             'cost_price'=>'required|min:1',
             'packet_quantity'=>'required|integer|min:0',
-            'loose_tablets'=>'required|integer|min:0',
+            'loose_sheets'=>'required|integer|min:0',
             'packet_size'=>'required|integer|min:1',
             'expiry_date'=>'required',
             'expiry_alert_days'=>'nullable|integer|min:0',
@@ -210,7 +210,7 @@ class PurchaseController extends Controller
             'cost_price'=>$request->cost_price,
             'quantity'=>$request->packet_quantity,
             'packet_quantity'=>$request->packet_quantity,
-            'loose_tablets'=>$request->loose_tablets,
+            'loose_sheets'=>$request->loose_sheets,
             'packet_size'=>$request->packet_size,
             'expiry_alert_days'=>$request->expiry_alert_days ?? $purchase->expiry_alert_days,
             'low_stock_alert_threshold'=>$request->low_stock_alert_threshold ?? $purchase->low_stock_alert_threshold,

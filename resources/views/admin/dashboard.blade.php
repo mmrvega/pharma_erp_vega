@@ -4,73 +4,148 @@
 
 @push('page-css')
     <link rel="stylesheet" href="{{asset('assets/plugins/chart.js/Chart.min.css')}}">
+    <style>
+        /* Recent sold product square cards */
+        .recent-grid { display:flex; flex-wrap:wrap; gap:12px; }
+        .recent-card.square { position:relative; width:100%; padding-top:100%; overflow:hidden; border: 1px solid #eee; transition: all 0.2s; }
+        .recent-card.square:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-color: #2196f3; }
+        .recent-card.square .card-body { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:8px; }
+        .recent-card .price { font-weight:700; color: #28a745; }
+        
+        /* POS Cart Styles */
+        #pos-cart th { font-size: 0.9rem; background: #f8f9fa; }
+        #pos-cart td { vertical-align: middle; }
+        .btn-unit-toggle { min-width: 80px; font-weight: 600; }
+        .btn-unit-toggle.packet { background-color: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; }
+        .btn-unit-toggle.sheet { background-color: #fff3e0; color: #f57c00; border: 1px solid #ffe0b2; }
+        .qty-input { width: 70px; text-align: center; font-weight: bold; }
+    </style>
 @endpush
 
 @section('content')
 
 @can('create-sale')
+
+<!-- Top Stats Row -->
+
+
 <div class="row">
-    <div class="col-md-19 col-lg-11">
-        <div class="card">
+    <!-- POS Section (Left) -->
+    <div class="col-lg-8 col-md-12">
+        <div class="card h-100">
+            <div class="card-header">
+                 <h4 class="card-title mb-1 text-white" style="color: white !important;" data-i18n="add_sale">{{ trans_key('add_sale') }}</h4>
+            </div>
             <div class="card-body custom-edit-service">
-                <h4 class="card-title" data-i18n="add_sale">{{ trans_key('add_sale') }}</h4>
                 @php $products = $products ?? []; @endphp
                 <!-- Create Sale (inline on dashboard) -->
                 <div id="pos-app">
                     <div class="form-group">
                         <label data-i18n="search_products">{{ trans_key('search_products') }}</label>
                         <div style="position:relative;">
-                            <input id="barcode-input" class="form-control" autocomplete="off" placeholder="Focus here and scan barcode or type product name" />
-                            <div id="search-results" class="list-group" style="position:absolute; top:100%; left:0; right:0; max-height:250px; overflow-y:auto; display:none; z-index:1000;"></div>
+                            <input id="barcode-input" class="form-control form-control-lg" autocomplete="off" placeholder="Scan barcode or type product name..." autofocus />
+                            <div id="search-results" class="list-group shadow-sm" style="position:absolute; top:100%; left:0; right:0; max-height:300px; overflow-y:auto; display:none; z-index:1000;"></div>
                         </div>
                     </div>
 
-                    <table class="table table-sm" id="pos-cart">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th style="width:60px; text-align:center">Qty</th>
-                                <th style="width:70px; text-align:center">Unit</th>
-                                <th style="width:80px; text-align:right">Price</th>
-                                <th style="width:80px; text-align:right">Total</th>
-                                <th style="width:40px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4" style="text-align:right"><strong>Total</strong></td>
-                                <td style="text-align:right"><strong id="pos-total">0.00</strong></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    <div class="d-flex justify-content-between gap-2">
-                        <button id="pos-clear" class="btn btn-secondary">Clear</button>
+                    <div class="d-flex justify-content-between gap-2 mb-3">
+                        <button id="pos-clear" class="btn btn-outline-danger btn-sm">Clear Cart</button>
                         <div class="d-flex gap-2">
-                            <button id="pos-make-sale" class="btn btn-info" title="Save and continue selling">
-                                <i class="fas fa-shopping-cart"></i>  Sale
+                            <button id="pos-make-sale" class="btn btn-info" title="Save sale">
+                                <i class="fas fa-save"></i> <span id="btn-text">Save Sale</span>
                             </button>
-                          <!--  <button id="pos-submit" class="btn btn-success" data-i18n="finalize_sale">{{ trans_key('finalize_sale') }}</button>   remove it for enabling print and sale method-->
+                            <!-- Print button logic handled in JS -->
                         </div>
                     </div>
+                      <div class="bg-light p-2 rounded mt-2" style="border: 1px solid #ddd;">
+                        <div class="d-flex justify-content-between">
+                            <span style="font-size: 1.1rem;"><strong>Total</strong></span>
+                            <span style="font-size: 1.1rem;"><strong id="pos-total">0.00</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+                        <table class="table table-bordered table-sm mb-0" id="pos-cart">
+                            <thead style="position: sticky; top: 0; background: #f8f9fa; z-index: 10;">
+                                <tr>
+                                    <th>Item</th>
+                                    <th style="width:90px; text-align:center">Unit</th>
+                                    <th style="width:80px; text-align:center">quantity</th>
+                                    <th style="width:100px; text-align:right">Price</th>
+                                    <th style="width:40px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Cart Items Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                  
                 </div>
                 <!--/ Create Sale -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Sold Products (Right - Quick Add) -->
+    <div class="col-lg-4 col-md-12 mt-3 mt-lg-0">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-1 text-white" style="color: white !important;">Quick Add</h5>
+                <small class="text-muted">Recent Sales</small>
+            </div>
+            <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
+                @php $recentSales = \App\Models\Sale::with('product.purchase')->latest()->take(6)->get(); @endphp
+                <div class="recent-grid row no-gutters">
+                    @forelse($recentSales as $s)
+                        @php
+                            $product = optional($s->product);
+                            $purchase = optional($product->purchase);
+                            $prodId = $product->id ?? null;
+                            $prodName = $purchase->product ?? ($product->name ?? 'Unknown');
+                            $packetSize = (int) ($purchase->packet_size ?? 1);
+                            $packetQuantity = (int) ($purchase->packet_quantity ?? 0);
+                            $looseSheets = (int) ($purchase->loose_sheets ?? 0);
+                            $pricePerPacket = (float) ($product->price ?? 0);
+                            $pricePerSheet = $packetSize > 0 ? round($pricePerPacket / $packetSize, 2) : 0;
+                        @endphp
+                        <div class="col-4 mb-2 px-1">
+                            <div class="card recent-card square recent-sale-add h-100" style="cursor:pointer;"
+                                 title="{{ $prodName }}"
+                                 data-prod-id="{{ $prodId }}"
+                                 data-name="{{ e($prodName) }}"
+                                 data-price-per-packet="{{ $pricePerPacket }}"
+                                 data-price-per-sheet="{{ $pricePerSheet }}"
+                                 data-packet-size="{{ $packetSize }}"
+                                 data-unit-type="{{ $product->unit_type ?? 'packet' }}"
+                                 data-packet-quantity="{{ $packetQuantity }}"
+                                 data-loose-sheets="{{ $looseSheets }}"
+                            >
+                                <div class="card-body text-center p-1">
+                                    <div style="font-size:0.8rem; font-weight:600; line-height:1.2; max-height:2.4em; overflow:hidden; margin-bottom:4px;">{{ Str::limit($prodName, 20) }}</div>
+                                    <div class="price" style="font-size:0.9rem;">{{ AppSettings::get('app_currency', '$') }}{{ number_format($pricePerPacket, 2) }}</div>
+                                    <small class="text-muted d-block mt-1" style="font-size:0.7rem;">Stk: {{ $packetQuantity }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12"><div class="text-muted text-center p-3">No recent sales</div></div>
+                    @endforelse
+                </div>
             </div>
         </div>
     </div>
 </div>
 @endcan
 
-<div class="row">
+<!-- Tables Row -->
+<div class="row mt-3">
+    <!-- Today's Sales -->
     <div class="col-md-12 col-lg-6">
-        <div class="card card-table p-3">
+        <div class="card card-table p-3 h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="card-title mb-1 text-white" 
-    style="color: white !important;" 
-    data-i18n="todays_sales">{{ trans_key('todays_sales') }}</h4>
+                <h4 class="card-title mb-1 text-white" style="color: white !important;" data-i18n="todays_sales">{{ trans_key('todays_sales') }}</h4>
                 <button id="print-today-sales" class="btn btn-sm btn-info" title="{{ trans_key('print') }}">
                     <i class="fas fa-print"></i> <span data-i18n="print">{{ trans_key('print') }}</span>
                 </button>
@@ -81,13 +156,12 @@
                         <thead>
                             <tr>
                                 <th>Medicine</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                                <th>Date</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
-                        <tbody>
-                                                                                      
+                        <tbody>                                                            
                         </tbody>
                     </table>
                 </div>
@@ -95,33 +169,72 @@
         </div>
     </div>
 
-    {{-- Modal to select/save default printer when none selected --}}
-    <div class="modal fade" id="printer-select-modal" tabindex="-1" role="dialog" aria-labelledby="printerSelectModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="printerSelectModalLabel">Select Default Printer</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p data-i18n="save_printer_help">{{ trans_key('save_printer_help') ?? 'If you want to save a default printer for automatic printing, enter its name or identifier below. This will be used as your preferred printer for quick prints.' }}</p>
-                    <div class="form-group">
-                        <label for="default-printer-input">Printer name / identifier</label>
-                        <input type="text" id="default-printer-input" class="form-control" placeholder="e.g. POS-Printer-01" value="{{ AppSettings::get('default_printer') }}" />
+    <!-- Expiration Alerts 
+    <div class="col-md-12 col-lg-6 mt-3 mt-lg-0">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0" style="color: white !important;">Expiration & Stock Alerts</h4>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                <ul class="nav nav-tabs nav-tabs-solid nav-justified" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" href="#tab-expired" data-toggle="tab">Expired</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tab-near" data-toggle="tab">Near Expiry</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tab-low" data-toggle="tab">Low Stock</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-expired">
+                        <ul class="list-group list-group-flush">
+                            @forelse($expiredPurchases ?? [] as $p)
+                                @php try { $expiry = \Illuminate\Support\Carbon::parse($p->expiry_date)->toDateString(); } catch(\Exception $e){ $expiry = $p->expiry_date; } @endphp
+                                <li class="list-group-item px-0 py-2 d-flex align-items-center">
+                                    <i class="fe fe-alert-circle text-danger mr-2" style="font-size:1.2rem;"></i>
+                                    <div>
+                                        <div class="font-weight-bold">{{ $p->product }}</div>
+                                        <small class="text-danger">Expired: {{ $expiry }}</small>
+                                    </div>
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center text-muted">No expired products</li>
+                            @endforelse
+                        </ul>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="cancel">{{ trans_key('cancel') }}</button>
-                    <button type="button" id="save-default-printer" class="btn btn-primary" data-i18n="save_and_print">{{ trans_key('save_and_print') }}</button>
+                    <div class="tab-pane" id="tab-near">
+                        <ul class="list-group list-group-flush">
+                            @forelse($nearExpiryPurchases ?? [] as $p)
+                                @php try { $expiry = \Illuminate\Support\Carbon::parse($p->expiry_date); $daysLeft = \Illuminate\Support\Carbon::now()->startOfDay()->diffInDays($expiry->startOfDay(), false); } catch(\Exception $e){ $expiry = $p->expiry_date; $daysLeft = '-'; } @endphp
+                                <li class="list-group-item px-0 py-2 d-flex align-items-center">
+                                    <i class="fe fe-clock text-warning mr-2" style="font-size:1.2rem;"></i>
+                                    <div>
+                                        <div class="font-weight-bold">{{ $p->product }}</div>
+                                        <small class="text-muted">Expires: {{ is_object($expiry) ? $expiry->toDateString() : $expiry }} ({{ $daysLeft }} days)</small>
+                                    </div>
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center text-muted">Good! No products near expiry.</li>
+                            @endforelse
+                        </ul>
+                    </div>
+                    <div class="tab-pane" id="tab-low">
+                        <ul class="list-group list-group-flush">
+                            @forelse($lowStockPurchases ?? [] as $p)
+                                <li class="list-group-item px-0 py-2 d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="font-weight-bold">{{ $p->product }}</div>
+                                        <small class="text-muted">Stock: {{ $p->packet_quantity }}</small>
+                                    </div>
+                                    <span class="badge badge-warning">Low</span>
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center text-muted">Stock levels are healthy.</li>
+                            @endforelse
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
+-->
+<!--exp sperated from stock alert-->
 <!-- Expiration notifications card (expired and near-expiry products) -->
 <div class="row mt-3">
     <div class="col-md-12">
@@ -217,13 +330,13 @@
 </div>
 
 <!-- Low Stock Alerts card - REMOVED: now part of Expiration Alerts card above -->
-
-<div class="row">
-    <div class="col-xl-12 col-sm-8 col-12">
-        <div class="card">
+</div>
+<div class="row mb-3">
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card bg-white h-100">
             <div class="card-body">
                 <div class="dash-widget-header">
-                    <span class="dash-widget-icon text-success">
+                    <span class="dash-widget-icon text-success bg-success-light">
                         <i class="fe fe-credit-card"></i>
                     </span>
                     <div class="dash-count">
@@ -234,7 +347,6 @@
                     </div>
                 </div>
                 <div class="dash-widget-info">
-                    
                     <h6 class="text-muted" data-i18n="invoices_today">{{ trans_key('invoices_today') }}</h6>
                     <div class="progress progress-sm">
                         <div class="progress-bar bg-success w-50"></div>
@@ -243,8 +355,8 @@
             </div>
         </div>
     </div>
+    <!-- Add more stats widgets here if needed -->
 </div>
-
 <!-- Product select modal (shown when multiple matching products found) -->
 <div class="modal fade" id="productSelectModal" tabindex="-1" role="dialog" aria-labelledby="productSelectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -283,10 +395,13 @@
                 {data: 'product', name: 'product'},
                 {data: 'quantity', name: 'quantity'},
                 {data: 'total_price', name: 'total_price'},
-			{data: 'date', name: 'date'},
-            ]
+			    {data: 'date', name: 'date'},
+            ],
+            bLengthChange: false, // hide 'show entries'
+            pageLength: 5,
+            searching: false,
+            ordering: false
         });
-        
     });
 </script> 
 <script src="{{asset('assets/plugins/chart.js/Chart.bundle.min.js')}}"></script>
@@ -300,67 +415,147 @@
     const posTotal = document.getElementById('pos-total');
     const posClear = document.getElementById('pos-clear');
     const posSubmit = document.getElementById('pos-submit');
+    const posMakeSale = document.getElementById('pos-make-sale');
+    const btnText = document.getElementById('btn-text');
 
-    // cart stored as {productId: {id,name,price,qty,total}}
+    // Check if print invoice on sale is enabled
+    const printInvoiceOnSale = {{ settings('print_invoice_on_sale', 0) ? 'true' : 'false' }};
+    
+    // Update button text based on setting
+    if (printInvoiceOnSale && btnText) {
+        btnText.textContent = 'Save & Print Invoice';
+    }
+
+    // Cart storage: Key = "ProductID_UnitType" (e.g. "101_packet", "101_sheet")
     const cart = {};
     let searchTimeout;
-    let currentIndex = -1; // for arrow-key navigation
+    let currentIndex = -1; 
 
     function renderCart(){
         cartBody.innerHTML = '';
         let total = 0;
-        Object.values(cart).forEach(item => {
+        
+        const keys = Object.keys(cart);
+        if(keys.length === 0){
+            cartBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Cart is empty. Scan barcode or click items to add.</td></tr>';
+            posTotal.textContent = '0.00';
+            return;
+        }
+
+        // Reverse keys to prepend items: newest at top
+        keys.reverse().forEach(key => {
+            const item = cart[key];
             const tr = document.createElement('tr');
-            // Calculate available quantity based on unit type
-            let availDisplay = '';
-            if (item.unit_type === 'tablet') {
-                availDisplay = ` (${item.total_tablets} tabs)`;
-            } else {
-                availDisplay = ` (${item.packet_quantity} pkt)`;
-            }
             
-            // Calculate current price based on unit type
-            let currentPrice = item.unit_type === 'tablet' ? item.price_per_tablet : item.price_per_packet;
-            let lineTotal = currentPrice * item.qty;
-            
+            // Determine display values
+            const isPacket = item.type === 'packet';
+            const unitLabel = isPacket ? 'Packet' : 'Sheet';
+            const btnClass = isPacket ? 'packet' : 'sheet';
+            const price = isPacket ? parseFloat(item.price_per_packet) : parseFloat(item.price_per_sheet);
+            const lineTotal = price * parseInt(item.qty);
+
+            // Stock Info
+            const stockInfo = ` <small class="text-muted d-block">Stk: ${item.packet_quantity} pkt, ${item.loose_sheets} sht</small>`;
+
             tr.innerHTML = `
-                <td>${item.name}${availDisplay}</td>
-                <td style="text-align:center"><input class="form-control form-control-sm pos-qty" data-id="${item.id}" value="${item.qty}" style="width:50px; margin:0 auto;" /></td>
-                <td style="text-align:center"><button class="btn btn-sm btn-outline-primary pos-unit-toggle" data-id="${item.id}" title="Click to toggle packet/tablet">${item.unit_type === 'tablet' ? 'Tablets' : 'Packets'}</button></td>
-                <td style="text-align:right">${currentPrice.toFixed(2)}</td>
-                <td style="text-align:right">${lineTotal.toFixed(2)}</td>
-                <td style="text-align:center"><button class="btn btn-sm btn-danger pos-remove" data-id="${item.id}">×</button></td>
+                <td>
+                    <span class="font-weight-bold text-dark">${item.name}</span>
+                    ${stockInfo}
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-unit-toggle ${btnClass}" onclick="toggleCartUnit('${key}')" title="Click to swap unit">
+                        ${unitLabel} <i class="fa fa-refresh ml-1"></i>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <input type="number" class="form-control form-control-sm qty-input mx-auto" min="1" value="${item.qty}" data-key="${key}" onchange="updateCartQty('${key}', this.value)">
+                </td>
+                <td class="text-right font-weight-bold">${lineTotal.toFixed(2)}</td>
+                <td class="text-center">
+                    <button class="btn btn-sm text-danger" onclick="removeCartItem('${key}')"><i class="fas fa-times"></i></button>
+                </td>
             `;
             cartBody.appendChild(tr);
             total += lineTotal;
         });
+        // Reverse again to restore original key order for consistent total calculation
+        keys.reverse();
         posTotal.textContent = total.toFixed(2);
     }
 
-    function addToCart(prod){
-        // ensure numeric prices
-        prod.price_per_packet = parseFloat(prod.price_per_packet) || 0;
-        prod.price_per_tablet = parseFloat(prod.price_per_tablet) || 0;
-        prod.packet_size = prod.packet_size || 1;
-        prod.unit_type = prod.unit_type || 'packet';
-        prod.packet_quantity = prod.packet_quantity || 0;
-        prod.loose_tablets = prod.loose_tablets || 0;
-        prod.total_tablets = (prod.packet_quantity * prod.packet_size) + prod.loose_tablets;
-        
-        if(cart[prod.id]){
-            cart[prod.id].qty += 1;
+    // Expose functions globally for inline onclick events
+    window.toggleCartUnit = function(oldKey){
+        const item = cart[oldKey];
+        if(!item) return;
+
+        // Swap type
+        const newType = item.type === 'packet' ? 'sheet' : 'packet';
+        const newKey = `${item.id}_${newType}`;
+
+        // Create new item with new type
+        const newItem = { ...item, type: newType };
+
+        // If the new key already exists (e.g., swapping Packet to Sheet, but Sheet row exists), merge qty
+        if(cart[newKey]){
+            cart[newKey].qty += item.qty;
         } else {
-            cart[prod.id] = { 
+            cart[newKey] = newItem;
+        }
+
+        // Remove old item
+        delete cart[oldKey];
+        renderCart();
+    };
+
+    window.updateCartQty = function(key, val){
+        if(cart[key]){
+            const qty = parseInt(val);
+            if(qty > 0) {
+                cart[key].qty = qty;
+            } else {
+                // if invalid or 0, reset to 1 or remove? Reset to 1 for safety
+                cart[key].qty = 1; 
+            }
+            renderCart();
+        }
+    };
+
+    window.removeCartItem = function(key){
+        delete cart[key];
+        renderCart();
+    };
+
+    function addToCart(prod){
+        // Ensure numeric
+        prod.price_per_packet = parseFloat(prod.price_per_packet) || 0;
+        prod.price_per_sheet = parseFloat(prod.price_per_sheet) || 0;
+        prod.packet_size = parseInt(prod.packet_size) || 1;
+        prod.packet_quantity = parseInt(prod.packet_quantity) || 0;
+        prod.loose_sheets = parseInt(prod.loose_sheets) || 0;
+
+        // Check if item has zero stock (no packets and no sheets)
+        if(prod.packet_quantity === 0 && prod.loose_sheets === 0){
+            alert(`⚠️ ${prod.name}\n\nOut of Stock!\n\nThis item has 0 packets and 0 sheets available.`);
+            return;
+        }
+
+        // Default to packet
+        const type = 'packet';
+        const key = `${prod.id}_${type}`;
+
+        if(cart[key]){
+            cart[key].qty++;
+        } else {
+            cart[key] = { 
                 id: prod.id, 
                 name: prod.name, 
                 price_per_packet: prod.price_per_packet, 
-                price_per_tablet: prod.price_per_tablet,
-                qty: 1, 
-                packet_size: prod.packet_size, 
-                unit_type: prod.unit_type,
+                price_per_sheet: prod.price_per_sheet,
+                packet_size: prod.packet_size,
                 packet_quantity: prod.packet_quantity,
-                loose_tablets: prod.loose_tablets,
-                total_tablets: prod.total_tablets
+                loose_sheets: prod.loose_sheets,
+                qty: 1,
+                type: type 
             };
         }
         renderCart();
@@ -368,6 +563,7 @@
         searchResults.style.display = 'none';
     }
 
+    // Search Logic
     function clearActive(){
         const items = searchResults.querySelectorAll('.list-group-item');
         items.forEach(it => it.classList.remove('active'));
@@ -380,37 +576,17 @@
             searchResults.style.display = 'none';
             return;
         }
-        // If more than one product is returned, prefer to show only available items in a modal
-        if(products.length > 1){
-            // filter products that have packets or tablets available
-            const available = products.filter(p => (parseInt(p.packet_quantity) > 0) || (parseInt(p.loose_tablets) > 0) || (parseInt(p.total_tablets) > 0));
-            if(available.length === 1){
-                // only one available => add it directly
-                addToCart(available[0]);
-                barcodeInput.value = '';
-                return;
-            }
-            // if multiple available or none available, show modal (if none available we still show all with out-of-stock notes)
-            showProductModal(available.length ? available : products);
-            return;
-        }
-
-        // otherwise render the inline search results (single item or small set)
         products.forEach((prod, idx) => {
             const item = document.createElement('button');
             item.type = 'button';
             item.className = 'list-group-item list-group-item-action text-left';
-            // show packet price and total tablets
             const packetPrice = parseFloat(prod.price_per_packet) || 0;
-            const tabletPrice = parseFloat(prod.price_per_tablet) || 0;
-            item.innerHTML = `<strong>${prod.name}</strong> - ${packetPrice.toFixed(2)} /pkt (${tabletPrice.toFixed(2)}/tab) - Stock: ${prod.packet_quantity} pkt + ${prod.loose_tablets} tabs`;
-            item.setAttribute('data-idx', idx);
+            item.innerHTML = `<strong>${prod.name}</strong> - ${packetPrice.toFixed(2)} /pkt - Stock: ${prod.packet_quantity}`;
             item.addEventListener('click', ()=>{ addToCart(prod); barcodeInput.focus(); });
             searchResults.appendChild(item);
         });
         searchResults.style.display = 'block';
 
-        // if only one result, focus it (so Enter will add quickly)
         if(products.length === 1){
             const only = searchResults.querySelector('.list-group-item');
             if(only) only.classList.add('active');
@@ -421,18 +597,19 @@
     function showProductModal(products){
         const list = document.getElementById('product-select-list');
         list.innerHTML = '';
-        products.forEach(function(prod, idx){
+        products.forEach(function(prod){
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
             const packetPrice = parseFloat(prod.price_per_packet) || 0;
-            const tabletPrice = parseFloat(prod.price_per_tablet) || 0;
+            const stockText = `${prod.packet_quantity} pkt`;
+            const sheetPrice = parseFloat(prod.price_per_sheet) || 0;
             const expiry = prod.expiry_display ? ('Expires: ' + prod.expiry_display) : 'No expiry';
-            const stockText = `Stock: ${prod.packet_quantity} pkt + ${prod.loose_tablets} tabs`;
-            btn.innerHTML = `<div><strong>${prod.name}</strong><div class="small text-muted">${packetPrice.toFixed(2)} /pkt — ${tabletPrice.toFixed(2)} /tab — ${stockText} — <span class=\"text-warning\">${expiry}</span></div></div><div><span class="badge badge-primary">Select</span></div>`;
+            
+            btn.innerHTML = `<div><strong>${prod.name}</strong><div class="small text-muted">${packetPrice.toFixed(2)} /pkt — ${sheetPrice.toFixed(2)} /sht — ${stockText} — <span class=\"text-warning\">${expiry}</span></div></div><div><span class="badge badge-primary">Select</span></div>`;
+
             btn.addEventListener('click', function(){
                 addToCart(prod);
-                // hide modal and clear search
                 $('#productSelectModal').modal('hide');
                 if(barcodeInput){ barcodeInput.value = ''; barcodeInput.focus(); }
             });
@@ -441,36 +618,26 @@
         $('#productSelectModal').modal('show');
     }
 
-    // perform immediate search (no debounce), returns promise resolving to data
     function searchProductsImmediate(query){
-        if(!query || query.length < 1) {
-            return Promise.resolve({ success:false, data: [] });
-        }
+        if(!query || query.length < 1) return Promise.resolve({ success:false, data: [] });
         return fetch('/products/barcode/' + encodeURIComponent(query), { headers: { 'X-Requested-With': 'XMLHttpRequest' }})
             .then(r => r.json())
             .catch(err => { console.error(err); return { success:false, data: [] }; });
     }
 
-    // search for products by barcode or name via AJAX (debounced)
     function searchProducts(query){
-        if(!query || query.length < 1) {
-            searchResults.style.display = 'none';
-            return;
-        }
-        
+        if(!query || query.length < 1) { searchResults.style.display = 'none'; return; }
         searchProductsImmediate(query).then(data => {
             if(data && data.success && data.data && data.data.length > 0){
-                // if all returned items share the exact barcode equal to query, auto-add the one with inventory
+                // Auto-select logic if exact barcode match
                 const allSameBarcode = data.data.every(p => p.barcode && p.barcode.toString() === query.toString());
                 if(allSameBarcode){
-                    // if multiple items share same barcode, prefer to show modal when more than one has inventory
-                    const available = data.data.filter(p => (parseInt(p.packet_quantity) > 0) || (parseInt(p.loose_tablets) > 0) || (parseInt(p.total_tablets) > 0));
+                    const available = data.data.filter(p => (parseInt(p.packet_quantity) > 0) || (parseInt(p.loose_sheets) > 0));
                     if(available.length === 1){
                         addToCart(available[0]);
                         barcodeInput.value = '';
                         return;
                     }
-                    // multiple available -> show modal so user picks; none available -> still show modal to inform user
                     showProductModal(available.length ? available : data.data);
                     return;
                 }
@@ -482,14 +649,12 @@
         });
     }
 
-    // input event: search as user types (shorter debounce for speed)
     barcodeInput && barcodeInput.addEventListener('input', function(e){
         clearTimeout(searchTimeout);
         const query = e.target.value.trim();
         searchTimeout = setTimeout(()=>{ searchProducts(query); }, 150);
     });
 
-    // handle keyboard navigation and Enter behaviour
     barcodeInput && barcodeInput.addEventListener('keydown', function(e){
         const items = searchResults.querySelectorAll('.list-group-item');
         if(e.key === 'ArrowDown'){
@@ -498,84 +663,70 @@
             currentIndex = Math.min(currentIndex + 1, items.length - 1);
             clearActive();
             items[currentIndex].classList.add('active');
-            return;
         } else if(e.key === 'ArrowUp'){
             e.preventDefault();
             if(items.length === 0) return;
             currentIndex = Math.max(currentIndex - 1, 0);
             clearActive();
             items[currentIndex].classList.add('active');
-            return;
         } else if(e.key === 'Enter'){
             e.preventDefault();
-            // if a highlighted item exists, click it
             const active = searchResults.querySelector('.list-group-item.active');
             if(active){ active.click(); barcodeInput.value = ''; searchResults.style.display = 'none'; return; }
 
-            // otherwise perform immediate search and if exactly one result, add it
             const code = barcodeInput.value.trim();
             if(!code) return;
+
+            // Name search fallback
+            if(!/^\d+$/.test(code)){
+                searchProductsImmediate(code).then(data => {
+                    if(data && data.success && data.data && data.data.length === 1){
+                        addToCart(data.data[0]);
+                        barcodeInput.value = '';
+                    } else if(data && data.success && data.data && data.data.length > 1){
+                        showProductModal(data.data);
+                    }
+                });
+                return;
+            }
+
+            // Numeric/Barcode search
             searchProductsImmediate(code).then(data => {
                 if(data && data.success && data.data && data.data.length === 1){
                     addToCart(data.data[0]);
                     barcodeInput.value = '';
                 } else if(data && data.success && data.data && data.data.length > 1){
-                    // if all results share the exact barcode, auto-add the one with inventory
-                    const allSameBarcode = data.data.every(p => p.barcode && p.barcode.toString() === code.toString());
-                    if(allSameBarcode){
-                        const available = data.data.filter(p => (parseInt(p.packet_quantity) > 0) || (parseInt(p.loose_tablets) > 0) || (parseInt(p.total_tablets) > 0));
-                        if(available.length === 1){
-                            addToCart(available[0]);
-                            barcodeInput.value = '';
-                            return;
-                        }
-                        showProductModal(available.length ? available : data.data);
-                        return;
+                    const available = data.data.filter(p => (parseInt(p.packet_quantity) > 0));
+                    if(available.length === 1){
+                         addToCart(available[0]);
+                         barcodeInput.value = '';
+                         return;
                     }
-                    // show results for user to pick
-                    showSearchResults(data.data);
-                } else {
-                    searchResults.innerHTML = '<div class="list-group-item text-muted">No products found</div>';
-                    searchResults.style.display = 'block';
+                    showProductModal(available.length ? available : data.data);
                 }
             });
-            return;
         } else if(e.key === 'Escape'){
             searchResults.style.display = 'none';
-            return;
         }
     });
 
-    // handle qty change and remove
-    document.addEventListener('input', function(e){
-        if(e.target && e.target.classList.contains('pos-qty')){
-            const id = e.target.getAttribute('data-id');
-            const val = parseInt(e.target.value) || 1;
-            if(cart[id]){
-                cart[id].qty = val;
-                renderCart();
-            }
-        }
-    });
-    
-    // handle unit type toggle (packet ↔ tablet)
+    // Recent items click
     document.addEventListener('click', function(e){
-        if(e.target && e.target.classList.contains('pos-unit-toggle')){
-            e.preventDefault();
-            const id = e.target.getAttribute('data-id');
-            if(cart[id]){
-                // Toggle between packet and tablet
-                cart[id].unit_type = cart[id].unit_type === 'packet' ? 'tablet' : 'packet';
-                renderCart();
-            }
-        }
-    });
-    document.addEventListener('click', function(e){
-        if(e.target && e.target.classList.contains('pos-remove')){
-            const id = e.target.getAttribute('data-id');
-            delete cart[id];
-            renderCart();
-        }
+        const btn = e.target.closest && e.target.closest('.recent-sale-add');
+        if(!btn) return;
+        e.preventDefault();
+        const prod = {
+            id: btn.getAttribute('data-prod-id'),
+            name: btn.getAttribute('data-name'),
+            price_per_packet: btn.getAttribute('data-price-per-packet'),
+            price_per_sheet: btn.getAttribute('data-price-per-sheet'),
+            packet_size: btn.getAttribute('data-packet-size'),
+            packet_quantity: btn.getAttribute('data-packet-quantity'),
+            loose_sheets: btn.getAttribute('data-loose-sheets')
+        };
+        addToCart(prod);
+        barcodeInput && (barcodeInput.value = '');
+        barcodeInput && barcodeInput.focus();
     });
 
     posClear && posClear.addEventListener('click', function(){
@@ -584,18 +735,21 @@
         barcodeInput.focus();
     });
 
-    posSubmit && posSubmit.addEventListener('click', function(){
-        const items = Object.values(cart).map(i => {
-            // Calculate the correct price based on unit type
-            const unitPrice = i.unit_type === 'tablet' ? i.price_per_tablet : i.price_per_packet;
-            return { 
-                product_id: i.id, 
-                quantity: i.qty,
-                packet_size: i.packet_size,
-                unit_type: i.unit_type,
-                unit_price: unitPrice
-            };
+    function submitSale(isPrint = false){
+        const items = [];
+        Object.values(cart).forEach(i => {
+            const qty = parseInt(i.qty) || 0;
+            if(qty > 0){
+                items.push({ 
+                    product_id: i.id, 
+                    quantity: qty, 
+                    packet_size: i.packet_size, 
+                    unit_type: i.type, // 'packet' or 'sheet'
+                    unit_price: i.type === 'packet' ? parseFloat(i.price_per_packet) : parseFloat(i.price_per_sheet)
+                });
+            }
         });
+
         if(items.length === 0){ alert('Cart is empty'); return; }
 
         fetch('{{ route('sales.pos') }}', {
@@ -609,79 +763,31 @@
         }).then(r => r.json())
         .then(data => {
             if(data.success){
-                // open invoice_print route in a new tab to show and print the invoice
-                window.open('{{ route('sales.invoice_print') }}', '_blank');
-                // clear cart
+                if(isPrint) {
+                    window.open('{{ route('sales.invoice_print') }}', '_blank');
+                }
                 Object.keys(cart).forEach(k => delete cart[k]);
                 renderCart();
                 barcodeInput.focus();
-                // Refresh the dashboard to update sales table and alerts
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-              //  alert('Sale complete! Invoice opened in new window.');
+                // Toaster notification or reload? Reload is safer for sync
+                setTimeout(() => { location.reload(); }, 1000);
             } else {
                 alert(data.message || 'Sale failed');
             }
-        }).catch(err=>{
+        }).catch(err => {
             console.error(err);
             alert('Sale request failed');
         });
-    });
+    }
 
-    // Make Sale button: save sale and continue selling without printing invoice
-    const posMakeSale = document.getElementById('pos-make-sale');
-    posMakeSale && posMakeSale.addEventListener('click', function(){
-        const items = Object.values(cart).map(i => {
-            // Calculate the correct price based on unit type
-            const unitPrice = i.unit_type === 'tablet' ? i.price_per_tablet : i.price_per_packet;
-            return { 
-                product_id: i.id, 
-                quantity: i.qty,
-                packet_size: i.packet_size,
-                unit_type: i.unit_type,
-                unit_price: unitPrice
-            };
-        });
-        if(items.length === 0){ alert('Cart is empty'); return; }
+    posMakeSale && posMakeSale.addEventListener('click', () => submitSale(printInvoiceOnSale));
+    // Button behavior: if printInvoiceOnSale is enabled, it will print after saving
 
-        fetch('{{ route('sales.pos') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({ items })
-        }).then(r => r.json())
-        .then(data => {
-            if(data.success){
-                // clear cart and focus back to barcode input (continue selling)
-                Object.keys(cart).forEach(k => delete cart[k]);
-                renderCart();
-                barcodeInput.focus();
-                // Refresh the dashboard to update sales table and alerts
-                setTimeout(() => {
-                    location.reload();
-                }, 800);
-            } else {
-                alert(data.message || 'Sale failed');
-            }
-        }).catch(err=>{
-            console.error(err);
-            alert('Sale request failed');
-        });
-    });
-
-    // autofocus barcode input on load
     setTimeout(()=>{ barcodeInput && barcodeInput.focus(); }, 300);
 })();
 
-// Print today's sales to thermal printer
 document.getElementById('print-today-sales') && document.getElementById('print-today-sales').addEventListener('click', function(){
-    // Open the print view in a new tab (similar to invoice)
     window.open('{{ route('sales.todays-print') }}', '_blank');
 });
-//--kiosk-printing
 </script>
 @endpush

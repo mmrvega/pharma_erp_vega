@@ -12,7 +12,7 @@ class Purchase extends Model
     protected $fillable = [
         'product','product_trade','product_scientific','category_id','supplier_id',
         'cost_price','quantity','expiry_date',
-        'image','packet_size','packet_quantity','loose_tablets','expiry_alert_days','low_stock_alert_threshold'
+        'image','packet_size','packet_quantity','loose_sheets','expiry_alert_days','low_stock_alert_threshold'
     ];
 
     public function supplier(){
@@ -28,24 +28,24 @@ class Purchase extends Model
     }
 
     /**
-     * Get total tablets (packets * packet_size + loose_tablets)
+     * Get total sheets (packets * packet_size + loose_sheets)
      */
-    public function getTotalTabletsAttribute()
+    public function getTotalSheetsAttribute()
     {
-        return ($this->packet_quantity * $this->packet_size) + $this->loose_tablets;
+        return ($this->packet_quantity * $this->packet_size) + $this->loose_sheets;
     }
 
     /**
-     * Get formatted inventory display (e.g., "9 packets + 6 tablets")
+     * Get formatted inventory display (e.g., "9 packets + 6 sheets")
      */
     public function getFormattedInventoryAttribute()
     {
-        if ($this->packet_quantity > 0 && $this->loose_tablets > 0) {
-            return "{$this->packet_quantity} packets + {$this->loose_tablets} tablets";
+        if ($this->packet_quantity > 0 && $this->loose_sheets > 0) {
+            return "{$this->packet_quantity} packets + {$this->loose_sheets} sheets";
         } elseif ($this->packet_quantity > 0) {
             return "{$this->packet_quantity} packets";
-        } elseif ($this->loose_tablets > 0) {
-            return "{$this->loose_tablets} tablets";
+        } elseif ($this->loose_sheets > 0) {
+            return "{$this->loose_sheets} sheets";
         } else {
             return "0";
         }

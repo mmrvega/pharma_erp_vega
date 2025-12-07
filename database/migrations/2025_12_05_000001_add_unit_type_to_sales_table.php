@@ -14,7 +14,7 @@ class AddUnitTypeToSalesTable extends Migration
     public function up()
     {
         Schema::table('sales', function (Blueprint $table) {
-            $table->enum('unit_type', ['packet', 'tablet'])->default('packet')->comment('Whether sold by packet or tablet');
+            $table->enum('unit_type', ['packet', 'sheet'])->default('packet')->comment('Whether sold by packet or sheet');
         });
     }
 

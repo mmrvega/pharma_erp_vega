@@ -13,14 +13,14 @@ class AddPacketAndUnitType extends Migration
      */
     public function up()
     {
-        // Add packet_size to purchases (e.g., 10 tablets per packet)
+        // Add packet_size to purchases (e.g., 10 sheets per packet)
         Schema::table('purchases', function (Blueprint $table) {
-            $table->integer('packet_size')->default(1)->comment('Number of tablets/units per packet');
+            $table->integer('packet_size')->default(1)->comment('Number of sheets/units per packet');
         });
 
-        // Add unit_type to products (packet or tablet)
+        // Add unit_type to products (packet or sheet)
         Schema::table('products', function (Blueprint $table) {
-            $table->enum('unit_type', ['packet', 'tablet'])->default('packet')->comment('Unit of measurement: packet or tablet');
+            $table->enum('unit_type', ['packet', 'sheet'])->default('packet')->comment('Unit of measurement: packet or sheet');
         });
     }
 

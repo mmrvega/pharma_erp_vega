@@ -44,7 +44,7 @@ class SaleController extends Controller
                     })
                     ->addColumn('quantity',function($sale){
                         $unitType = $sale->unit_type ?? 'packet';
-                        $unitLabel = $unitType === 'tablet' ? 'tablets' : 'packets';
+                        $unitLabel = $unitType === 'sheet' ? 'sheets' : 'packets';
                         return $sale->quantity . ' ' . $unitLabel;
                     })
                     ->addColumn('total_price',function($sale){                   
@@ -151,7 +151,7 @@ class SaleController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
-            'items.*.unit_type' => 'required|in:packet,tablet',
+            'items.*.unit_type' => 'required|in:packet,sheet',
             'items.*.unit_price' => 'required|numeric|min:0',
         ]);
 
@@ -170,7 +170,7 @@ class SaleController extends Controller
                 $unitType = $it['unit_type'] ?? 'packet';
                 $quantityToSell = $it['quantity'];
 
-                // Smart decrement: handle packet vs tablet selling
+                // Smart decrement: handle packet vs sheet selling
                 if ($unitType === 'packet') {
                     // Selling by packet - simple decrement
                     if ($purchase->packet_quantity < $quantityToSell) {
@@ -179,29 +179,29 @@ class SaleController extends Controller
                     }
                     $purchase->packet_quantity -= $quantityToSell;
                 } else {
-                    // Selling by tablet - needs smart breakdown
-                    // First check if we have enough total tablets
-                    $totalTablets = ($purchase->packet_quantity * $purchase->packet_size) + $purchase->loose_tablets;
-                    if ($totalTablets < $quantityToSell) {
+                    // Selling by sheet - needs smart breakdown
+                    // First check if we have enough total sheets
+                    $totalSheets = ($purchase->packet_quantity * $purchase->packet_size) + $purchase->loose_sheets;
+                    if ($totalSheets < $quantityToSell) {
                         DB::rollBack();
-                        return response()->json(['success' => false, 'message' => 'Insufficient tablets for product: '.$prod->purchase->product], 400);
+                        return response()->json(['success' => false, 'message' => 'Insufficient sheets for product: '.$prod->purchase->product], 400);
                     }
 
-                    // Decrement from loose tablets first
-                    if ($purchase->loose_tablets >= $quantityToSell) {
-                        $purchase->loose_tablets -= $quantityToSell;
+                    // Decrement from loose sheets first
+                    if ($purchase->loose_sheets >= $quantityToSell) {
+                        $purchase->loose_sheets -= $quantityToSell;
                     } else {
-                        // Use remaining loose tablets
-                        $quantityToSell -= $purchase->loose_tablets;
-                        $purchase->loose_tablets = 0;
+                        // Use remaining loose sheets
+                        $quantityToSell -= $purchase->loose_sheets;
+                        $purchase->loose_sheets = 0;
 
-                        // Break down packets into tablets
+                        // Break down packets into sheets
                         $packetsToBreak = ceil($quantityToSell / $purchase->packet_size);
                         $purchase->packet_quantity -= $packetsToBreak;
 
-                        // Add the tablets from broken packets
-                        $tabletsFromBrokenPackets = $packetsToBreak * $purchase->packet_size;
-                        $purchase->loose_tablets = $tabletsFromBrokenPackets - $quantityToSell;
+                        // Add the sheets from broken packets
+                        $sheetsFromBrokenPackets = $packetsToBreak * $purchase->packet_size;
+                        $purchase->loose_sheets = $sheetsFromBrokenPackets - $quantityToSell;
                     }
                 }
 
@@ -220,8 +220,8 @@ class SaleController extends Controller
                 $totalAmount += $itemTotal;
 
                 // send low-stock notification if needed
-                $totalTablets = ($purchase->packet_quantity * $purchase->packet_size) + $purchase->loose_tablets;
-                if ($totalTablets <= $purchase->packet_size && $totalTablets > 0) {
+                $totalSheets = ($purchase->packet_quantity * $purchase->packet_size) + $purchase->loose_sheets;
+                if ($totalSheets <= $purchase->packet_size && $totalSheets > 0) {
                     event(new PurchaseOutStock($purchase));
                 }
             }
@@ -398,7 +398,7 @@ class SaleController extends Controller
                 'product' => $productName,
                 'quantity' => $s->quantity,
                 'unit_type' => $unitType,
-                'unit_label' => $unitType === 'tablet' ? 'tablets' : 'packets',
+                'unit_label' => $unitType === 'sheet' ? 'sheets' : 'packets',
                 'total_price' => $s->total_price,
                 'time' => $s->created_at->format('H:i'),
             ];

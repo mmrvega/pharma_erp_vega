@@ -71,8 +71,8 @@
 						</div>
 						<div class="col-lg-4">
 							<div class="form-group">
-								<label>Loose Tablets<span class="text-danger">*</span></label>
-								<input class="form-control" value="{{$purchase->loose_tablets}}" type="number" name="loose_tablets" min="0">
+								<label>Loose Sheets<span class="text-danger">*</span></label>
+								<input class="form-control" value="{{$purchase->loose_sheets}}" type="number" name="loose_sheets" min="0">
 							</div>
 						</div>
 					</div>
@@ -82,7 +82,7 @@
 					<div class="row">
 						<div class="col-lg-3">
 							<div class="form-group">
-								<label>Tablets per Packet<span class="text-danger">*</span></label>
+								<label>Sheets per Packet<span class="text-danger">*</span></label>
 								<input class="form-control" value="{{$purchase->packet_size}}" type="number" name="packet_size" min="1">
 							</div>
 						</div>

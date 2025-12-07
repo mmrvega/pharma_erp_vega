@@ -4,12 +4,24 @@
 		<div id="sidebar-menu" class="sidebar-menu">
 			
 			<ul>
-				<li class="menu-title"> 
+				<!--<li class="menu-title"> 
 					<span data-i18n="main">{{ trans_key('main') }}</span>
-				</li>
+				</li>-->
 				<li class="{{ route_is('dashboard') ? 'active' : '' }}"> 
 					<a href="{{route('dashboard')}}"><i class="fe fe-home"></i> <span data-i18n="dashboard">{{ trans_key('dashboard') }}</span></a>
 				</li>
+				
+				@can('view-purchase')
+			<li class="submenu">
+				<a href="#"><i class="fe fe-star-o"></i> <span data-i18n="purchase">{{ trans_key('purchase') }}</span> <i class="fa fa-chevron-right"></i></a>
+					<ul style="display: none;">
+						<li><a class="{{ route_is('purchases.*') ? 'active' : '' }}" href="{{route('purchases.index')}}" data-i18n="purchase">{{ trans_key('purchase') }}</a></li>
+						@can('create-purchase')
+						<li><a class="{{ route_is('purchases.create') ? 'active' : '' }}" href="{{route('purchases.create')}}" data-i18n="add_purchase">{{ trans_key('add_purchase') }}</a></li>
+						@endcan
+					</ul>
+				</li>
+				@endcan
 				
 				@can('view-category')
 				<li class="{{ route_is('categories.*') ? 'active' : '' }}"> 
@@ -25,18 +37,6 @@
 						@can('create-product')<li><a class="{{ route_is('products.create') ? 'active' : '' }}" href="{{route('products.create')}}" data-i18n="add_product">{{ trans_key('add_product') }}</a></li>@endcan
 						@can('view-outstock-products')<li><a class="{{ route_is('outstock') ? 'active' : '' }}" href="{{route('outstock')}}" data-i18n="out_stock">{{ trans_key('out_stock') }}</a></li>@endcan
 						@can('view-expired-products')<li><a class="{{ route_is('expired') ? 'active' : '' }}" href="{{route('expired')}}" data-i18n="expired">{{ trans_key('expired') }}</a></li>@endcan
-					</ul>
-				</li>
-				@endcan
-				
-			@can('view-purchase')
-			<li class="submenu">
-				<a href="#"><i class="fe fe-star-o"></i> <span data-i18n="purchase">{{ trans_key('purchase') }}</span> <i class="fa fa-chevron-right"></i></a>
-					<ul style="display: none;">
-						<li><a class="{{ route_is('purchases.*') ? 'active' : '' }}" href="{{route('purchases.index')}}" data-i18n="purchase">{{ trans_key('purchase') }}</a></li>
-						@can('create-purchase')
-						<li><a class="{{ route_is('purchases.create') ? 'active' : '' }}" href="{{route('purchases.create')}}" data-i18n="add_purchase">{{ trans_key('add_purchase') }}</a></li>
-						@endcan
 					</ul>
 				</li>
 				@endcan

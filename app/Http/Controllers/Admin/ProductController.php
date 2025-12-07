@@ -94,7 +94,7 @@ class ProductController extends Controller
             ->join('purchases', 'purchases.id', '=', 'products.purchase_id')
             ->where(function($subQ){
                 $subQ->where('purchases.packet_quantity', '>', 0)
-                     ->orWhere('purchases.loose_tablets', '>', 0)
+                     ->orWhere('purchases.loose_sheets', '>', 0)
                      ->orWhere('purchases.quantity', '>', 0);
             })
             ->where(function($subQ) use ($q) {
@@ -102,7 +102,7 @@ class ProductController extends Controller
                       ->orWhere('purchases.product', 'like', '%'.$q.'%');
             })
             ->orderBy('purchases.packet_quantity', 'desc')
-            ->orderBy('purchases.loose_tablets', 'desc')
+            ->orderBy('purchases.loose_sheets', 'desc')
             ->orderBy('products.id', 'asc')
             ->select('products.*')
             ->limit(12)
@@ -115,18 +115,18 @@ class ProductController extends Controller
         // return array of matching products with numeric price for quicker client use
         $data = $products->map(function($product) {
             $purchase = $product->purchase;
-            $totalTablets = ($purchase->packet_quantity * $purchase->packet_size) + $purchase->loose_tablets;
+            $totalSheets = ($purchase->packet_quantity * $purchase->packet_size) + $purchase->loose_sheets;
             $pricePerPacket = (float) $product->price;
-            $pricePerTablet = $purchase->packet_size > 0 ? $pricePerPacket / $purchase->packet_size : 0;
+            $pricePerSheet = $purchase->packet_size > 0 ? $pricePerPacket / $purchase->packet_size : 0;
             
             return [
                 'id' => $product->id,
                 'name' => $product->purchase->product,
                 'price_per_packet' => $pricePerPacket,
-                'price_per_tablet' => $pricePerTablet,
+                'price_per_sheet' => $pricePerSheet,
                 'packet_quantity' => $purchase->packet_quantity,
-                'loose_tablets' => $purchase->loose_tablets,
-                'total_tablets' => $totalTablets,
+                'loose_sheets' => $purchase->loose_sheets,
+                'total_sheets' => $totalSheets,
                 'packet_size' => $purchase->packet_size ?? 1,
                 'unit_type' => $product->unit_type ?? 'packet',
                 'barcode' => $product->barcode,

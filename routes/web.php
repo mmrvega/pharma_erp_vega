@@ -71,6 +71,9 @@ Route::middleware(['auth'])->group(function(){
 
     // Save default printer via AJAX
     Route::post('settings/default-printer',[SettingController::class,'saveDefaultPrinter'])->name('settings.default-printer');
+    
+    // Save POS and general settings
+    Route::post('settings/save',[SettingController::class,'savePOSSettings'])->name('settings.save');
 
     Route::get('settings',[SettingController::class,'index'])->name('settings');
 });

@@ -8,15 +8,16 @@
 			$logo = AppSettings::get('logo');
 			$logoSmall = AppSettings::get('logo-small');
 		@endphp
+		</a>
+		<a href="javascript:void(0);" id="toggle_btn" >
+		<i class="fe fe-text-align-left"></i>
+		</a>
 		<a href="{{route('dashboard')}}" class="logo">
 			<img src="{{ $logo ? asset('storage/' . $logo) : asset('assets/img/logo.png') }}" alt="Logo">
 		</a>
 		<a href="{{route('dashboard')}}" class="logo logo-small">
 			<img src="{{ $logoSmall ? asset('storage/' . $logoSmall) : asset('assets/img/logo-small.png') }}" alt="Logo" width="30" height="30">
-		</a>
-		<a href="javascript:void(0);" id="toggle_btn" >
-		<i class="fe fe-text-align-left"></i>
-		</a>
+		
 	</div>
 	<!-- /Logo -->
 	

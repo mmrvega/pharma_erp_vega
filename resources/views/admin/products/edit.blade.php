@@ -73,7 +73,7 @@
 							</div>
 							<div class="col-lg-4">
 								<div class="form-group">
-									<label>Tablets per Packet</label>
+									<label>Sheets per Packet</label>
 									<input class="form-control" type="number" id="packet-size-display" disabled value="{{ optional($product->purchase)->packet_size ?? 1}}">
 								</div>
 							</div>
@@ -82,7 +82,7 @@
 									<label>Sell By Unit</label>
 									<select class="form-select form-control" name="unit_type">
 										<option value="packet" {{ $product->unit_type == 'packet' ? 'selected' : '' }}>Packet</option>
-										<option value="tablet" {{ $product->unit_type == 'tablet' ? 'selected' : '' }}>Tablet</option>
+										<option value="sheet" {{ $product->unit_type == 'sheet' ? 'selected' : '' }}>Sheet</option>
 									</select>
 								</div>
 							</div>

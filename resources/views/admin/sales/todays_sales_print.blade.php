@@ -54,7 +54,7 @@
                     <td>{{ optional(optional($sale->product)->purchase)->product ?? 'N/A' }}</td>
                     <td class="center">{{ $sale->quantity }}</td>
                     <td class="center">
-                        @if($sale->unit_type === 'tablet')
+                        @if($sale->unit_type === 'sheet')
                             شريط
                         @else
                             باكيت

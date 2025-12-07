@@ -70,8 +70,8 @@
                                             </h2>
                                         </td>
                                         <td>{{ $qty }}</td>
-                                        <td>{{ AppSettings::get('app_currency', '$') }}{{ number_format($totalPrice, 2) }}</td>
-                                        <td>{{ AppSettings::get('app_currency', '$') }}{{ number_format($totalCost, 2) }}</td>
+                                        <td>{{ number_format($totalPrice, 2) }}{{ AppSettings::get('app_currency', '$') }}</td>
+                                        <td>{{ number_format($totalCost, 2) }}{{ AppSettings::get('app_currency', '$') }}</td>
                                         <td>{{ $profitPercent }}%</td>
                                         <td>{{ optional($purchase->created_at)->format('d M, Y') }}</td>
                                     </tr>
@@ -82,8 +82,8 @@
                                 <tr>
                                     <th>Total</th>
                                     <th>{{ $sumQty }}</th>
-                                    <th>{{ AppSettings::get('app_currency', '$') }}{{ number_format($sumTotalPrice, 2) }}</th>
-                                    <th>{{ AppSettings::get('app_currency', '$') }}{{ number_format($sumTotalCost, 2) }}</th>
+                                    <th>{{ number_format($sumTotalPrice, 2) }}{{ AppSettings::get('app_currency', '$') }}</th>
+                                    <th>{{ number_format($sumTotalCost, 2) }}{{ AppSettings::get('app_currency', '$') }}</th>
                                     <th>
                                         @php
                                             $overallPercent = $sumTotalCost > 0 ? round((($sumTotalPrice - $sumTotalCost) / $sumTotalCost) * 100, 2) : 0;

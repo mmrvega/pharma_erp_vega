@@ -57,8 +57,8 @@ return [
         // Units
         'packet' => 'Packet',
         'packets' => 'Packets',
-        'tablet' => 'Tablet',
-        'tablets' => 'Tablets',
+        'sheet' => 'Sheet',
+        'sheets' => 'Sheets',
         
         // Today\'s Sales
         'todays_sales' => 'Today\'s Sales',
@@ -188,8 +188,8 @@ return [
         // Units
         'packet' => 'عبوة',
         'packets' => 'عبوات',
-        'tablet' => 'قرص',
-        'tablets' => 'أقراص',
+        'sheet' => 'شريط',
+        'sheets' => 'أشرطة',
         
         // Today\'s Sales
         'todays_sales' => 'مبيعات اليوم',
