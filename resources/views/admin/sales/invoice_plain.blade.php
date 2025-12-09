@@ -53,9 +53,9 @@
                     <td class="center">{{ $sale->quantity }}</td>
                     <td class="center">
                         @if($sale->unit_type === 'sheet')
-                            {{ $sale->quantity * optional($sale->product->purchase)->packet_size }} شريط
+                            شريط
                         @else
-                            {{ $sale->quantity }} باكيت
+                            باكيت
                         @endif
                     </td>
                     <td class="right">{{ settings('app_currency','$') }} {{ number_format($sale->total_price,2) }}</td>

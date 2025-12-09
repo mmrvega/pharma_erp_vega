@@ -26,7 +26,6 @@
 
 @can('create-sale')
 
-<!-- Top Stats Row -->
 
 
 <div class="row">
@@ -70,7 +69,7 @@
                                 <tr>
                                     <th>Item</th>
                                     <th style="width:90px; text-align:center">Unit</th>
-                                    <th style="width:80px; text-align:center">quantity</th>
+                                    <th style="width:80px; text-align:center">Quantity</th>
                                     <th style="width:100px; text-align:right">Price</th>
                                     <th style="width:40px"></th>
                                 </tr>
@@ -89,14 +88,17 @@
     </div>
 
     <!-- Recent Sold Products (Right - Quick Add) -->
-    <div class="col-lg-4 col-md-12 mt-3 mt-lg-0">
+    <div class="col-lg-4 col-md-12 mt-3 mt-lg-0" data-section="recent-sales">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-1 text-white" style="color: white !important;">Quick Add</h5>
                 <small class="text-muted">Recent Sales</small>
             </div>
             <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
-                @php $recentSales = \App\Models\Sale::with('product.purchase')->latest()->take(6)->get(); @endphp
+                @php
+                    // Fetch latest sales but make unique by product to avoid duplicate quick-add cards
+                    $recentSales = \App\Models\Sale::with('product.purchase')->latest()->get()->unique('product_id')->take(6);
+                @endphp
                 <div class="recent-grid row no-gutters">
                     @forelse($recentSales as $s)
                         @php
@@ -142,7 +144,7 @@
 <!-- Tables Row -->
 <div class="row mt-3">
     <!-- Today's Sales -->
-    <div class="col-md-12 col-lg-6">
+    <div class="col-md-12 col-lg-6" data-section="todays-sales">
         <div class="card card-table p-3 h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-1 text-white" style="color: white !important;" data-i18n="todays_sales">{{ trans_key('todays_sales') }}</h4>
@@ -169,80 +171,13 @@
         </div>
     </div>
 
-    <!-- Expiration Alerts 
-    <div class="col-md-12 col-lg-6 mt-3 mt-lg-0">
+    <!-- Expiration notifications card (expired and near-expiry products) -->
+    <div class="col-md-12 col-lg-6 mt-3 mt-lg-0" data-section="alerts-card">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="card-title mb-0" style="color: white !important;">Expiration & Stock Alerts</h4>
-            </div>
-            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-                <ul class="nav nav-tabs nav-tabs-solid nav-justified" role="tablist">
-                    <li class="nav-item"><a class="nav-link active" href="#tab-expired" data-toggle="tab">Expired</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#tab-near" data-toggle="tab">Near Expiry</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#tab-low" data-toggle="tab">Low Stock</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab-expired">
-                        <ul class="list-group list-group-flush">
-                            @forelse($expiredPurchases ?? [] as $p)
-                                @php try { $expiry = \Illuminate\Support\Carbon::parse($p->expiry_date)->toDateString(); } catch(\Exception $e){ $expiry = $p->expiry_date; } @endphp
-                                <li class="list-group-item px-0 py-2 d-flex align-items-center">
-                                    <i class="fe fe-alert-circle text-danger mr-2" style="font-size:1.2rem;"></i>
-                                    <div>
-                                        <div class="font-weight-bold">{{ $p->product }}</div>
-                                        <small class="text-danger">Expired: {{ $expiry }}</small>
-                                    </div>
-                                </li>
-                            @empty
-                                <li class="list-group-item text-center text-muted">No expired products</li>
-                            @endforelse
-                        </ul>
-                    </div>
-                    <div class="tab-pane" id="tab-near">
-                        <ul class="list-group list-group-flush">
-                            @forelse($nearExpiryPurchases ?? [] as $p)
-                                @php try { $expiry = \Illuminate\Support\Carbon::parse($p->expiry_date); $daysLeft = \Illuminate\Support\Carbon::now()->startOfDay()->diffInDays($expiry->startOfDay(), false); } catch(\Exception $e){ $expiry = $p->expiry_date; $daysLeft = '-'; } @endphp
-                                <li class="list-group-item px-0 py-2 d-flex align-items-center">
-                                    <i class="fe fe-clock text-warning mr-2" style="font-size:1.2rem;"></i>
-                                    <div>
-                                        <div class="font-weight-bold">{{ $p->product }}</div>
-                                        <small class="text-muted">Expires: {{ is_object($expiry) ? $expiry->toDateString() : $expiry }} ({{ $daysLeft }} days)</small>
-                                    </div>
-                                </li>
-                            @empty
-                                <li class="list-group-item text-center text-muted">Good! No products near expiry.</li>
-                            @endforelse
-                        </ul>
-                    </div>
-                    <div class="tab-pane" id="tab-low">
-                        <ul class="list-group list-group-flush">
-                            @forelse($lowStockPurchases ?? [] as $p)
-                                <li class="list-group-item px-0 py-2 d-flex align-items-center justify-content-between">
-                                    <div>
-                                        <div class="font-weight-bold">{{ $p->product }}</div>
-                                        <small class="text-muted">Stock: {{ $p->packet_quantity }}</small>
-                                    </div>
-                                    <span class="badge badge-warning">Low</span>
-                                </li>
-                            @empty
-                                <li class="list-group-item text-center text-muted">Stock levels are healthy.</li>
-                            @endforelse
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
--->
-<!--exp sperated from stock alert-->
-<!-- Expiration notifications card (expired and near-expiry products) -->
-<div class="row mt-3">
-    <div class="col-md-12">
-        <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-0" style="color: white !important;">Expiration Alerts</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                 <div class="row">
                     <div class="col-md-6">
                         <h5 class="text-danger">Expired</h5>
@@ -328,26 +263,52 @@
         </div>
     </div>
 </div>
+<!-- Top Stats Row -->
+<div class="row mb-3" data-section="stat-cards">
+    <!-- Card 1: Number of Invoices/Sales Today -->
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card bg-white h-100">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon text-primary bg-primary-light">
+                        <i class="fe fe-file-text"></i>
+                    </span>
+                    <div class="dash-count">
+                        @php
+                            // Count the number of sale records (invoices)
+                            $salesCount = \App\Models\Sale::whereDate('created_at', \Carbon\Carbon::today())->count();
+                        @endphp
+                        <h3>{{ $salesCount ?? 0 }}</h3>
+                    </div>
+                </div>
+                <div class="dash-widget-info">
+                    <h6 class="text-muted">Sales Today</h6>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-primary w-50"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Low Stock Alerts card - REMOVED: now part of Expiration Alerts card above -->
-</div>
-<div class="row mb-3">
+    <!-- Card 2: Number of Items Sold Today -->
     <div class="col-xl-3 col-sm-6 col-12">
         <div class="card bg-white h-100">
             <div class="card-body">
                 <div class="dash-widget-header">
                     <span class="dash-widget-icon text-success bg-success-light">
-                        <i class="fe fe-credit-card"></i>
+                        <i class="fe fe-shopping-cart"></i>
                     </span>
                     <div class="dash-count">
                         @php
-                            $todayInvoices = \App\Models\Sale::whereDate('created_at', \Carbon\Carbon::today())->count();
+                            // Sum the quantity of items sold
+                            $itemsSold = \App\Models\Sale::whereDate('created_at', \Carbon\Carbon::today())->sum('quantity');
                         @endphp
-                        <h3>{{ $todayInvoices }}</h3>
+                        <h3>{{ $itemsSold ?? 0 }}</h3>
                     </div>
                 </div>
                 <div class="dash-widget-info">
-                    <h6 class="text-muted" data-i18n="invoices_today">{{ trans_key('invoices_today') }}</h6>
+                    <h6 class="text-muted">Items Sold Today</h6>
                     <div class="progress progress-sm">
                         <div class="progress-bar bg-success w-50"></div>
                     </div>
@@ -355,7 +316,6 @@
             </div>
         </div>
     </div>
-    <!-- Add more stats widgets here if needed -->
 </div>
 <!-- Product select modal (shown when multiple matching products found) -->
 <div class="modal fade" id="productSelectModal" tabindex="-1" role="dialog" aria-labelledby="productSelectModalLabel" aria-hidden="true">
@@ -381,7 +341,8 @@
 @push('page-js')
 <script>
     $(document).ready(function() {
-        var table = $('#sales-table').DataTable({
+        // Initialize today's sales DataTable and store globally so we can reload it after POS saves
+        window.todaysSalesTable = $('#sales-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -606,7 +567,7 @@
             const sheetPrice = parseFloat(prod.price_per_sheet) || 0;
             const expiry = prod.expiry_display ? ('Expires: ' + prod.expiry_display) : 'No expiry';
             
-            btn.innerHTML = `<div><strong>${prod.name}</strong><div class="small text-muted">${packetPrice.toFixed(2)} /pkt — ${sheetPrice.toFixed(2)} /sht — ${stockText} — <span class=\"text-warning\">${expiry}</span></div></div><div><span class="badge badge-primary">Select</span></div>`;
+            btn.innerHTML = `<div><strong>${prod.name}</strong><div class="small text-muted">${packetPrice.toFixed(2)} /pkt — ${sheetPrice.toFixed(2)} /sht — ${stockText} — <span class=\"text-warning\">${expiry}</span></div></div><div><span class=\"badge badge-primary\">Select</span></div>`;
 
             btn.addEventListener('click', function(){
                 addToCart(prod);
@@ -763,20 +724,94 @@
         }).then(r => r.json())
         .then(data => {
             if(data.success){
+                // Show success notification
+                if(typeof Snackbar !== 'undefined') {
+                    Snackbar.show({
+                        text: '✓ Sale saved successfully!',
+                        pos: 'top-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#8dbf42'
+                    });
+                }
+
                 if(isPrint) {
                     window.open('{{ route('sales.invoice_print') }}', '_blank');
                 }
+
+                // Clear cart and reset UI
                 Object.keys(cart).forEach(k => delete cart[k]);
                 renderCart();
                 barcodeInput.focus();
-                // Toaster notification or reload? Reload is safer for sync
-                setTimeout(() => { location.reload(); }, 1000);
+
+                // Reload dashboard data via AJAX instead of full page refresh
+                reloadDashboardData();
             } else {
                 alert(data.message || 'Sale failed');
             }
         }).catch(err => {
             console.error(err);
             alert('Sale request failed');
+        });
+    }
+
+    // Reload dashboard cards via AJAX
+    function reloadDashboardData() {
+        // Reload today's sales table via DataTable (use global todaysSalesTable)
+        if(typeof todaysSalesTable !== 'undefined' && todaysSalesTable) {
+            try {
+                todaysSalesTable.ajax.reload();
+            } catch(e) {
+                console.warn('Could not reload todays sales table:', e);
+            }
+        }
+
+        // Fetch the dashboard page and extract all updatable sections
+        fetch('{{ route('dashboard') }}', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(r => r.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // List of sections to reload
+            const sections = ['recent-sales', 'stat-cards', 'alerts-card'];
+            
+            sections.forEach(sectionName => {
+                const sourceSection = doc.querySelector('[data-section="' + sectionName + '"]');
+                const targetSection = document.querySelector('[data-section="' + sectionName + '"]');
+                
+                if(sourceSection && targetSection) {
+                    targetSection.innerHTML = sourceSection.innerHTML;
+                    
+                    // Re-attach event handlers based on section type
+                    if(sectionName === 'recent-sales') {
+                        attachRecentSalesClickHandlers();
+                    }
+                }
+            });
+        }).catch(err => {
+            console.warn('Error reloading dashboard sections:', err);
+        });
+    }
+
+    // Attach click handlers to recent sale cards
+    function attachRecentSalesClickHandlers() {
+        document.querySelectorAll('.recent-sale-add').forEach(card => {
+            card.addEventListener('click', function(){
+                const prod = {
+                    id: this.dataset.prodId,
+                    name: this.dataset.name,
+                    price_per_packet: parseFloat(this.dataset.pricePerPacket) || 0,
+                    price_per_sheet: parseFloat(this.dataset.pricePerSheet) || 0,
+                    packet_size: parseInt(this.dataset.packetSize) || 1,
+                    packet_quantity: parseInt(this.dataset.packetQuantity) || 0,
+                    loose_sheets: parseInt(this.dataset.looseSheets) || 0
+                };
+                addToCart(prod);
+            });
         });
     }
 
