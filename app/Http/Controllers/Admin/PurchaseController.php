@@ -151,6 +151,10 @@ class PurchaseController extends Controller
         }
 
         $notifications = notify("Purchase has been added");
+        // If user clicked "Save and Continue", redirect back to create so they can add another
+        if ($request->has('save_and_continue')) {
+            return redirect()->route('purchases.create')->with($notifications);
+        }
         return redirect()->route('purchases.index')->with($notifications);
     }
 
@@ -167,8 +171,10 @@ class PurchaseController extends Controller
         $title = 'edit purchase';
         $categories = Category::get();
         $suppliers = Supplier::get();
+        // pass all purchases so the edit form can offer a quick-select to copy values
+        $allPurchases = Purchase::with('purchaseProduct')->orderBy('product')->get();
         return view('admin.purchases.edit',compact(
-            'title','purchase','categories','suppliers'
+            'title','purchase','categories','suppliers','allPurchases'
         ));
     }
 
@@ -217,13 +223,40 @@ class PurchaseController extends Controller
             'expiry_date'=>$request->expiry_date,
             'image'=>$imageName,
         ]);
+        // Handle optional product fields (update or create linked Product)
+        if($request->filled('product_price') || $request->filled('product_barcode') || $request->filled('product_unit_type')){
+            $prod = \App\Models\Product::where('purchase_id', $purchase->id)->first();
+            $data = [
+                'purchase_id' => $purchase->id,
+                'price' => $request->product_price ?: 0,
+                'discount' => $request->product_discount ?? 0,
+                'description' => $request->product_description ?? null,
+                'barcode' => $request->product_barcode ?? null,
+                'unit_type' => $request->product_unit_type ?? 'packet',
+            ];
+            if($prod){
+                $prod->update($data);
+            } else {
+                \App\Models\Product::create($data);
+            }
+        }
+
         $notifications = notify("Purchase has been updated");
+        if ($request->has('save_and_continue')) {
+            return redirect()->route('purchases.edit', $purchase)->with($notifications);
+        }
         return redirect()->route('purchases.index')->with($notifications);
+    }
+
+    public function json(Purchase $purchase)
+    {
+        return $purchase->load(['category', 'supplier', 'purchaseProduct']);
     }
 
     public function reports(){
         $title ='purchase reports';
-        return view('admin.purchases.reports',compact('title'));
+        $purchases = collect(); // Empty collection to show form without initial data
+        return view('admin.purchases.reports',compact('title', 'purchases'));
     }
 
     public function generateReport(Request $request){

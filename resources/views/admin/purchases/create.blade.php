@@ -34,20 +34,20 @@
 						</div>
 						<div class="col-12 col-md-6">
 							<div class="form-group">
-								<label class="form-label">Scientific Name</label>
-								<input class="form-control" type="text" name="product_scientific" placeholder="e.g. Paracetamol">
+								<label class="form-label">Scientific Name <span class="text-danger">*</span></label>
+								<input class="form-control" type="text" name="product_scientific" required placeholder="e.g. Paracetamol">
 							</div>
 						</div>
 					</div>
 
 					<!-- Optional: Product details section (create Product record linked to this Purchase) -->
 					<div class="service-fields mb-3 border-top pt-3">
-						<h5>Add product listing (optional)</h5>
+						<h5>Add product listing </h5>
 						<div class="row">
 							<div class="col-lg-4">
 								<div class="form-group">
-									<label>Selling Price</label>
-									<input class="form-control" type="text" name="product_price" placeholder="e.g. 1500">
+									<label>Selling Price <span class="text-danger">*</span></label>
+									<input class="form-control" type="text" name="product_price" required placeholder="e.g. 1500">
 								</div>
 							</div>
 							<div class="col-lg-4">
@@ -71,14 +71,7 @@
 							</div>
 						</div>
 						</div>
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label>Product Description</label>
-									<textarea class="form-control" name="product_description" rows="2"></textarea>
-								</div>
-							</div>
-						</div>
+						
 					</div>
 					<div class="row mb-3">
 						<div class="col-12 col-md-6">
@@ -129,23 +122,35 @@
 							<input class="form-control" type="number" name="low_stock_alert_threshold" value="0" min="0" placeholder="Alert when packets ≤">
 						</div>
 					</div>
-
-					<div class="row mb-3">
-						<div class="col-12">
-							<label class="form-label">Medicine Image</label>
-							<input type="file" name="image" class="form-control">
-						</div>
-					</div>
-
 					<div class="row mb-3">
 						<div class="col-12 col-md-6">
 							<label class="form-label">Expire Date <span class="text-danger">*</span></label>
 							<input class="form-control" type="date" name="expiry_date">
 						</div>
 					</div>
+									
+					<div class="row mb-3">
+						<div class="col-12">
+							<label class="form-label">Medicine Image</label>
+							<input type="file" name="image" class="form-control">
+						</div>
+					</div>
+					
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="form-group">
+									<label>Product Description</label>
+									<textarea class="form-control" name="product_description" rows="2"></textarea>
+								</div>
+							</div>
+						</div>
+
+
+					
 
 					<div class="d-flex justify-content-end mt-3">
-						<button class="btn btn-lg btn-primary" type="submit">Submit Purchase</button>
+						<button class="btn btn-lg btn-secondary mr-2" type="submit" name="save_and_continue" value="1">Save and Continue</button>
+						<button class="btn btn-lg btn-primary" type="submit">save</button>
 					</div>
 					</form>
 				<!-- /Add Medicine -->

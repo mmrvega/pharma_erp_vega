@@ -261,6 +261,14 @@ body.rtl .sidebar-menu ul ul li a {
     padding: 1.5rem;
 }
 
+.card-header-white {
+    background: linear-gradient(90deg, var(--primary-gold) 0%, #adabab 100%);
+    color: var(--primary-gold);
+    font-weight: 600;
+    border: none;
+    border-bottom: 2px solid var(--primary-gold);
+    padding: 1.5rem;
+}
 .card-body {
     padding: 2rem;
 }

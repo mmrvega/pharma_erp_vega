@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\PurchaseController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SaleController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\PreferredItemController;
+use App\Http\Controllers\Admin\StockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,21 +50,33 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('categories',CategoryController::class)->only(['index','store','destroy']);
     Route::put('categories',[CategoryController::class,'update'])->name('categories.update');
     Route::resource('purchases',PurchaseController::class)->except('show');
+    // Edit without id (AJAX-driven editor) and JSON endpoint for purchases
+    Route::get('purchases/edit',[PurchaseController::class,'editNoId'])->name('purchases.edit.noid');
+    Route::get('purchases/{purchase}/json',[PurchaseController::class,'json'])->name('purchases.json');
     Route::get('purchases/reports',[PurchaseController::class,'reports'])->name('purchases.report');
     Route::post('purchases/reports',[PurchaseController::class,'generateReport']);
     Route::resource('products',ProductController::class)->except('show');
     Route::get('products/barcode/{query}',[ProductController::class,'barcodeLookup'])->name('products.barcode');
     Route::get('products/outstock',[ProductController::class,'outstock'])->name('outstock');
     Route::get('products/expired',[ProductController::class,'expired'])->name('expired');
+    // Stock summary
+    Route::get('stock/summary',[StockController::class,'summary'])->name('stock.summary');
     Route::resource('sales',SaleController::class)->except('show');
     // POS-style sale endpoint (accepts multiple items)
     Route::post('sales/pos',[SaleController::class,'posStore'])->name('sales.pos');
+    // Delete entire invoice (grouped by timestamp of the passed sale ID)
+    Route::delete('sales/invoice/{id}',[SaleController::class,'destroyInvoice'])->name('sales.destroy.invoice');
     Route::get('sales/invoice',[SaleController::class,'showInvoice'])->name('sales.invoice');
     Route::get('sales/todays-for-print',[SaleController::class,'todaysSalesForPrint'])->name('sales.todays-for-print');
     Route::get('sales/todays-print',[SaleController::class,'todaysSalesPrint'])->name('sales.todays-print');
     Route::get('sales/invoice_print',[SaleController::class,'invoicePrintLatest'])->name('sales.invoice_print');
     Route::get('sales/reports',[SaleController::class,'reports'])->name('sales.report');
     Route::post('sales/reports',[SaleController::class,'generateReport']);
+
+    // Preferred Items Routes
+    Route::get('preferred-items',[PreferredItemController::class,'index'])->name('preferred-items.index');
+    Route::post('preferred-items',[PreferredItemController::class,'store'])->name('preferred-items.store');
+    Route::delete('preferred-items/{productId}',[PreferredItemController::class,'destroy'])->name('preferred-items.destroy');
 
     Route::get('backup', [BackupController::class,'index'])->name('backup.index');
     Route::put('backup/create', [BackupController::class,'create'])->name('backup.store');

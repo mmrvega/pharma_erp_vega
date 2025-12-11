@@ -38,6 +38,7 @@
 						@can('create-product')<li><a class="{{ route_is('products.create') ? 'active' : '' }}" href="{{route('products.create')}}" data-i18n="add_product">{{ trans_key('add_product') }}</a></li>@endcan
 						@can('view-outstock-products')<li><a class="{{ route_is('outstock') ? 'active' : '' }}" href="{{route('outstock')}}" data-i18n="out_stock">{{ trans_key('out_stock') }}</a></li>@endcan
 						@can('view-expired-products')<li><a class="{{ route_is('expired') ? 'active' : '' }}" href="{{route('expired')}}" data-i18n="expired">{{ trans_key('expired') }}</a></li>@endcan
+						@can('view-products')<li><a class="{{ route_is('stock.summary') ? 'active' : '' }}" href="{{ route('stock.summary') }}"><i class="fe fe-box"></i> Stock Summary</a></li>@endcan
 					</ul>
 				</li>
 				@endcan

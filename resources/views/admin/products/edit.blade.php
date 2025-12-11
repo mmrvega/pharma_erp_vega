@@ -31,11 +31,12 @@
 							<div class="col-lg-12">
 								<div class="form-group">
 									<label>Product <span class="text-danger">*</span></label>
-									<select class="select2 form-select form-control" name="product" id="product-select"> 
-										@foreach ($purchases as $purchase)
-											@php $selected = (!empty($product->purchase) && $product->purchase->id == $purchase->id) ? 'selected' : '' ; @endphp
-											<option {{$selected}} value="{{$purchase->id}}" data-packet-size="{{$purchase->packet_size}}">{{$purchase->product}} ({{$purchase->packet_size}}/pkt)</option>
-										@endforeach
+									<select class="select2 form-select form-control" name="product"> 
+                                        @foreach ($purchases as $purchase)
+                                            @if(!empty($product->purchase))
+                                            <option {{($product->purchase->id == $purchase->id) ? 'selected': ''}} value="{{$purchase->id}}">{{$purchase->product}}</option>
+                                            @endif
+                                        @endforeach
 									</select>
 								</div>
 							</div>
@@ -65,34 +66,13 @@
 					
 					<div class="service-fields mb-3">
 						<div class="row">
-							<div class="col-lg-6">
-								<div class="form-group">
-									<label>Barcode</label>
-									<input class="form-control" type="text" name="barcode" value="{{$product->barcode}}" placeholder="Enter product barcode">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label>Sheets per Packet</label>
-									<input class="form-control" type="number" id="packet-size-display" disabled value="{{ optional($product->purchase)->packet_size ?? 1}}">
-								</div>
-							</div>
-							<div class="col-lg-4">
-								<div class="form-group">
-									<label>Sell By Unit</label>
-									<select class="form-select form-control" name="unit_type">
-										<option value="packet" {{ $product->unit_type == 'packet' ? 'selected' : '' }}>Packet</option>
-										<option value="sheet" {{ $product->unit_type == 'sheet' ? 'selected' : '' }}>Sheet</option>
-									</select>
-								</div>
-							</div>
 							<div class="col-lg-12">
 								<div class="form-group">
 									<label>Descriptions <span class="text-danger">*</span></label>
 									<textarea class="form-control service-desc" value="{{$product->description}}" name="description">{{$product->description}}</textarea>
 								</div>
 							</div>
-                            
+							
 						</div>
 					</div>					
 					
@@ -109,16 +89,5 @@
 
 
 @push('page-js')
-	<script>
-		// Auto-populate packet size display when purchase selection changes
-		const productSelect = document.querySelector('select[name="product"]');
-		if(productSelect){
-			productSelect.addEventListener('change', function(){
-				const selected = this.options[this.selectedIndex];
-				const packetSize = selected.getAttribute('data-packet-size') || '1';
-				const display = document.getElementById('packet-size-display');
-				if(display) display.value = packetSize;
-			});
-		}
-	</script>
+	
 @endpush

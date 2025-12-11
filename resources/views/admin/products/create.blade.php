@@ -44,14 +44,14 @@
                     
                     <div class="service-fields mb-3">
                         <div class="row">
-                            <div class="col-lg-6">
+                           <!-- <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>Sheets per Packet</label>
                                     <input class="form-control" type="number" id="packet-size-display" disabled>
                                     <small class="text-muted">Auto-filled from the purchase</small>
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
+                            </div> -->
+                            <<div class="col-lg-6">
                                 <div class="form-group">
                                     <label>Sell By Unit <span class="text-danger">*</span></label>
                                     <select class="form-select form-control" name="unit_type">

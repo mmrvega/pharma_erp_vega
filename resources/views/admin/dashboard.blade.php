@@ -87,53 +87,26 @@
         </div>
     </div>
 
-    <!-- Recent Sold Products (Right - Quick Add) -->
+    <!-- Preferred Items (Right - Add Items User Prefers) -->
     <div class="col-lg-4 col-md-12 mt-3 mt-lg-0" data-section="recent-sales">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-1 text-white" style="color: white !important;">Quick Add</h5>
-                <small class="text-muted">Recent Sales</small>
+            <div class="card-header">
+                <h5 class="card-title mb-1 text-white" style="color: white !important;">Preferred Items</h5>
             </div>
             <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
-                @php
-                    // Fetch latest sales but make unique by product to avoid duplicate quick-add cards
-                    $recentSales = \App\Models\Sale::with('product.purchase')->latest()->get()->unique('product_id')->take(6);
-                @endphp
-                <div class="recent-grid row no-gutters">
-                    @forelse($recentSales as $s)
-                        @php
-                            $product = optional($s->product);
-                            $purchase = optional($product->purchase);
-                            $prodId = $product->id ?? null;
-                            $prodName = $purchase->product ?? ($product->name ?? 'Unknown');
-                            $packetSize = (int) ($purchase->packet_size ?? 1);
-                            $packetQuantity = (int) ($purchase->packet_quantity ?? 0);
-                            $looseSheets = (int) ($purchase->loose_sheets ?? 0);
-                            $pricePerPacket = (float) ($product->price ?? 0);
-                            $pricePerSheet = $packetSize > 0 ? round($pricePerPacket / $packetSize, 2) : 0;
-                        @endphp
-                        <div class="col-4 mb-2 px-1">
-                            <div class="card recent-card square recent-sale-add h-100" style="cursor:pointer;"
-                                 title="{{ $prodName }}"
-                                 data-prod-id="{{ $prodId }}"
-                                 data-name="{{ e($prodName) }}"
-                                 data-price-per-packet="{{ $pricePerPacket }}"
-                                 data-price-per-sheet="{{ $pricePerSheet }}"
-                                 data-packet-size="{{ $packetSize }}"
-                                 data-unit-type="{{ $product->unit_type ?? 'packet' }}"
-                                 data-packet-quantity="{{ $packetQuantity }}"
-                                 data-loose-sheets="{{ $looseSheets }}"
-                            >
-                                <div class="card-body text-center p-1">
-                                    <div style="font-size:0.8rem; font-weight:600; line-height:1.2; max-height:2.4em; overflow:hidden; margin-bottom:4px;">{{ Str::limit($prodName, 20) }}</div>
-                                    <div class="price" style="font-size:0.9rem;">{{ AppSettings::get('app_currency', '$') }}{{ number_format($pricePerPacket, 2) }}</div>
-                                    <small class="text-muted d-block mt-1" style="font-size:0.7rem;">Stk: {{ $packetQuantity }}</small>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-12"><div class="text-muted text-center p-3">No recent sales</div></div>
-                    @endforelse
+                <!-- Search to Add New Preferred Items -->
+                <div class="form-group mb-3">
+                    <label for="preferred-item-search" style="font-size: 0.9rem; font-weight: 600;">Add Item to Favorites</label>
+                    <input type="text" id="preferred-item-search" class="form-control form-control-sm" placeholder="Search by name or barcode..." autocomplete="off">
+                    <div id="preferred-item-results" class="list-group mt-2" style="max-height: 250px; overflow-y: auto; display:none;"></div>
+                </div>
+                
+                <!-- Saved Preferred Items -->
+                <div>
+                    <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; display: block;">Your Favorites (Click to Add)</label>
+                    <div id="preferred-items-grid" class="row no-gutters" style="gap: 8px;">
+                        <div class="col-12 text-muted text-center p-3" style="font-size: 0.85rem;">No favorite items yet. Search above to add.</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,14 +120,21 @@
     <div class="col-md-12 col-lg-6" data-section="todays-sales">
         <div class="card card-table p-3 h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="card-title mb-1 text-white" style="color: white !important;" data-i18n="todays_sales">{{ trans_key('todays_sales') }}</h4>
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title mb-0 text-white mr-3" style="color: white !important;" data-i18n="todays_sales">{{ trans_key('todays_sales') }}</h4>
+                    <div class="btn-group btn-group-sm ml-2">
+                        <button type="button" class="btn btn-light active" id="btn-view-sales">Items</button>
+                        <button type="button" class="btn btn-outline-light" style="color:white; border-color:white;" id="btn-view-invoices">Invoices</button>
+                    </div>
+                </div>
                 <button id="print-today-sales" class="btn btn-sm btn-info" title="{{ trans_key('print') }}">
                     <i class="fas fa-print"></i> <span data-i18n="print">{{ trans_key('print') }}</span>
                 </button>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table id="sales-table" class="datatable table table-hover table-center mb-0">
+                <!-- Sales Table (Items) -->
+                <div class="table-responsive" id="wrapper-sales">
+                    <table id="sales-table" class="datatable table table-hover table-center mb-0" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Medicine</th>
@@ -165,6 +145,22 @@
                         </thead>
                         <tbody>                                                            
                         </tbody>
+                    </table>
+                </div>
+                
+                <!-- Invoices Table (Hidden by default) -->
+                <div class="table-responsive" id="wrapper-invoices" style="display:none;">
+                    <table id="invoices-table" class="table table-hover table-center mb-0" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>Time</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -271,7 +267,7 @@
             <div class="card-body">
                 <div class="dash-widget-header">
                     <span class="dash-widget-icon text-primary bg-primary-light">
-                        <i class="fe fe-file-text"></i>
+                        <i class="fe fe-activity"></i>
                     </span>
                     <div class="dash-count">
                         @php
@@ -297,7 +293,7 @@
             <div class="card-body">
                 <div class="dash-widget-header">
                     <span class="dash-widget-icon text-success bg-success-light">
-                        <i class="fe fe-shopping-cart"></i>
+                        <i class="fe fe-activity"></i>
                     </span>
                     <div class="dash-count">
                         @php
@@ -341,14 +337,13 @@
 @push('page-js')
 <script>
     $(document).ready(function() {
-        // Initialize today's sales DataTable and store globally so we can reload it after POS saves
+        // Initialize today's sales DataTable and store globally
         window.todaysSalesTable = $('#sales-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 url: "{{route('sales.index')}}",
                 data: function(d){
-                    // request only today's sales for the dashboard widget
                     d.date = 'today';
                 }
             },
@@ -358,12 +353,96 @@
                 {data: 'total_price', name: 'total_price'},
 			    {data: 'date', name: 'date'},
             ],
-            bLengthChange: false, // hide 'show entries'
+            bLengthChange: false,
             pageLength: 5,
             searching: false,
             ordering: false
         });
+
+        // Toggle View Logic
+        $('#btn-view-sales').click(function(){
+            $('#wrapper-sales').show();
+            $('#wrapper-invoices').hide();
+            $(this).addClass('active btn-light').removeClass('btn-outline-light').css('color', '');
+            $('#btn-view-invoices').removeClass('active btn-light').addClass('btn-outline-light').css('color', 'white');
+            window.todaysSalesTable.ajax.reload();
+        });
+
+        $('#btn-view-invoices').click(function(){
+            $('#wrapper-sales').hide();
+            $('#wrapper-invoices').show();
+            $(this).addClass('active btn-light').removeClass('btn-outline-light').css('color', '');
+            $('#btn-view-sales').removeClass('active btn-light').addClass('btn-outline-light').css('color', 'white');
+
+            if(!$.fn.DataTable.isDataTable('#invoices-table')){
+                window.invoicesTable = $('#invoices-table').DataTable({
+                   processing: true,
+                   serverSide: true,
+                   ajax: {
+                       url: "{{route('sales.index')}}",
+                       data: function(d){
+                           d.type = 'invoices';
+                       }
+                   },
+                   columns: [
+                       {data: 'display_id', name: 'display_id'},
+                       {data: 'invoice_time', name: 'invoice_time'},
+                       {data: 'items_count', name: 'items_count'},
+                       {data: 'total_amount', name: 'total_amount'},
+                       {data: 'action', name: 'action', orderable: false, searchable: false},
+                   ],
+                   bLengthChange: false,
+                   pageLength: 5,
+                   searching: false,
+                   ordering: false
+                }); 
+            } else {
+                window.invoicesTable.ajax.reload();
+            }
+        });
+
+        // Handle delete invoice
+        $(document).on('click', '.delete-invoice-btn', function(){
+            const id = $(this).data('id');
+            const url = $(this).data('route');
+            if(confirm('Are you sure you want to delete this invoice? This will delete all items in the invoice and restore stock.')){
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(resp){
+                        if(resp.success){
+                            if(window.invoicesTable) window.invoicesTable.ajax.reload();
+                            if(window.todaysSalesTable) window.todaysSalesTable.ajax.reload();
+                            if(typeof Snackbar !== 'undefined'){
+                                Snackbar.show({ text: 'Invoice deleted successfully', pos: 'bottom-right', backgroundColor: '#4caf50' });
+                            } else {
+                                alert('Invoice deleted successfully');
+                            }
+                        } else {
+                            alert('Error: ' + resp.message);
+                        }
+                    },
+                    error: function(err){
+                        console.error(err);
+                        alert('Failed to delete invoice');
+                    }
+                });
+            }
+        });
+        
+        // Expose a refresh function for POS
+        window.refreshDashboardTables = function(){
+             if(window.todaysSalesTable) window.todaysSalesTable.ajax.reload();
+             if(window.invoicesTable) window.invoicesTable.ajax.reload();
+             // Reload stats if feasible - here we simply reload the page partials or keep simple
+             // Reloading these tables is critical for user feedback
+        };
     });
+
+
 </script> 
 <script src="{{asset('assets/plugins/chart.js/Chart.bundle.min.js')}}"></script>
 
@@ -696,6 +775,195 @@
         barcodeInput.focus();
     });
 
+    // Preferred Items Management (persistent in Database)
+    const preferredItemSearch = document.getElementById('preferred-item-search');
+    const preferredItemResults = document.getElementById('preferred-item-results');
+    const preferredItemsGrid = document.getElementById('preferred-items-grid');
+    let preferredSearchTimeout;
+    
+    // Load preferred items from Database
+    let preferredItems = {};
+    
+    function loadPreferredItems() {
+        fetch('{{ route('preferred-items.index') }}', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(r => r.json())
+        .then(data => {
+            preferredItems = {};
+            if(data.success && data.data) {
+                data.data.forEach(item => {
+                    preferredItems[item.id] = item;
+                });
+            }
+            renderPreferredItems();
+        }).catch(err => {
+            console.warn('Error loading preferred items:', err);
+        });
+    }
+    
+    // Display saved preferred items
+    function renderPreferredItems() {
+        const itemCount = Object.keys(preferredItems).length;
+        if(itemCount === 0) {
+            preferredItemsGrid.innerHTML = '<div class="col-12 text-muted text-center p-3" style="font-size: 0.85rem;">No favorite items yet. Search above to add.</div>';
+            return;
+        }
+        
+        preferredItemsGrid.innerHTML = '';
+        Object.values(preferredItems).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'col-6 mb-2 px-1';
+            card.style.flex = '0 0 calc(50% - 4px)';
+            
+            const inStock = parseInt(item.packet_quantity) > 0 ? 'text-success' : 'text-danger';
+            
+            card.innerHTML = `
+                <div class="card h-100" style="cursor: pointer; border: 1px solid #ddd; transition: all 0.2s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow=''; this.style.transform=''">
+                    <div class="card-body p-2 text-center position-relative" onclick="addPreferredItemToCart('${item.id}')">
+                        <div style="font-size: 0.75rem; font-weight: 600; line-height: 1.2; max-height: 2.2em; overflow: hidden; margin-bottom: 4px;">${item.name}</div>
+                        <div style="font-size: 0.85rem; color: #28a745; font-weight: 700;">${item.price_per_packet.toFixed(2)}</div>
+                        <small class="text-muted d-block mt-1" style="font-size: 0.7rem;"><span class="${inStock}">Stk: ${item.packet_quantity}</span></small>
+                        <button class="btn btn-xs btn-link text-danger p-0 mt-1" style="font-size: 0.7rem;" onclick="event.stopPropagation(); removePreferredItem('${item.id}')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+            preferredItemsGrid.appendChild(card);
+        });
+    }
+    
+    // Add item to preferred (from search results)
+    window.addToPreferred = function(prod) {
+        fetch('{{ route('preferred-items.store') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ product_id: prod.id })
+        }).then(r => r.json())
+        .then(data => {
+            if(data.success) {
+                preferredItems[prod.id] = {
+                    id: prod.id,
+                    name: prod.name,
+                    price_per_packet: parseFloat(prod.price_per_packet) || 0,
+                    price_per_sheet: parseFloat(prod.price_per_sheet) || 0,
+                    packet_size: parseInt(prod.packet_size) || 1,
+                    packet_quantity: parseInt(prod.packet_quantity) || 0,
+                    loose_sheets: parseInt(prod.loose_sheets) || 0
+                };
+                renderPreferredItems();
+                preferredItemSearch.value = '';
+                preferredItemResults.style.display = 'none';
+                preferredItemSearch.focus();
+                
+                if(typeof Snackbar !== 'undefined') {
+                    Snackbar.show({
+                        text: '✓ Added to favorites!',
+                        pos: 'bottom-right',
+                        actionTextColor: '#fff',
+                        backgroundColor: '#2196f3'
+                    });
+                }
+            }
+        }).catch(err => {
+            console.error('Error adding to preferred:', err);
+        });
+    };
+    
+    // Add preferred item to cart (from favorites list)
+    window.addPreferredItemToCart = function(prodId) {
+        if(!preferredItems[prodId]) return;
+        addToCart(preferredItems[prodId]);
+    };
+    
+    // Remove item from preferred
+    window.removePreferredItem = function(prodId) {
+        fetch('{{ route('preferred-items.destroy', '') }}/' + prodId, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(r => r.json())
+        .then(data => {
+            if(data.success) {
+                delete preferredItems[prodId];
+                renderPreferredItems();
+            }
+        }).catch(err => {
+            console.error('Error removing preferred item:', err);
+        });
+    };
+
+    if(preferredItemSearch) {
+        preferredItemSearch.addEventListener('input', function(e){
+            clearTimeout(preferredSearchTimeout);
+            const query = e.target.value.trim();
+            
+            if(query.length < 1) {
+                preferredItemResults.style.display = 'none';
+                return;
+            }
+
+            preferredSearchTimeout = setTimeout(() => {
+                searchProductsImmediate(query).then(data => {
+                    if(data && data.success && data.data && data.data.length > 0) {
+                        preferredItemResults.innerHTML = '';
+                        data.data.forEach(prod => {
+                            const isAlreadyFavorited = preferredItems[prod.id] ? true : false;
+                            const item = document.createElement('button');
+                            item.type = 'button';
+                            item.className = 'list-group-item list-group-item-action text-left d-flex justify-content-between align-items-center';
+                            const price = parseFloat(prod.price_per_packet) || 0;
+                            const stockAvailable = parseInt(prod.packet_quantity) > 0;
+                            const stockClass = stockAvailable ? 'text-success' : 'text-danger';
+                            const btnText = isAlreadyFavorited ? '✓ Favorited' : '+ Add to Favorites';
+                            const btnClass = isAlreadyFavorited ? 'badge-success' : 'badge-primary';
+                            
+                            item.innerHTML = `
+                                <div>
+                                    <strong>${prod.name}</strong><br>
+                                    <small class="text-muted">${price.toFixed(2)} /pkt</small>
+                                </div>
+                                <span class="badge ${btnClass}">${btnText}</span>
+                            `;
+                            
+                            item.addEventListener('click', function(e){
+                                e.preventDefault();
+                                if(!isAlreadyFavorited) {
+                                    addToPreferred(prod);
+                                }
+                            });
+                            
+                            preferredItemResults.appendChild(item);
+                        });
+                        preferredItemResults.style.display = 'block';
+                    } else {
+                        preferredItemResults.innerHTML = '<div class="list-group-item text-muted text-center p-2">No items found</div>';
+                        preferredItemResults.style.display = 'block';
+                    }
+                });
+            }, 200);
+        });
+
+        // Hide results when clicking outside
+        document.addEventListener('click', function(e){
+            if(!e.target.closest('#preferred-item-search') && !e.target.closest('#preferred-item-results')) {
+                preferredItemResults.style.display = 'none';
+            }
+        });
+    }
+    
+    // Initialize preferred items from database on page load
+    loadPreferredItems();
+
     function submitSale(isPrint = false){
         const items = [];
         Object.values(cart).forEach(i => {
@@ -733,12 +1001,14 @@
                         backgroundColor: '#8dbf42'
                     });
                 }
+                if(window.refreshDashboardTables) window.refreshDashboardTables();
 
+                // Open invoice print in new window
                 if(isPrint) {
                     window.open('{{ route('sales.invoice_print') }}', '_blank');
                 }
-
-                // Clear cart and reset UI
+                // We typically reload page or clear form. 
+                // Since this is SPA-like, we just clear form.
                 Object.keys(cart).forEach(k => delete cart[k]);
                 renderCart();
                 barcodeInput.focus();
